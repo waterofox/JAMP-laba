@@ -22,7 +22,9 @@ private:
 public:
 	Token(const token_type& type, const std::string& lexema);
 
-	const token_type& get_type();
-	const std::string& get_lexema();
+	const token_type& get_type() const;
+	const std::string& get_lexema() const;
+
+	bool operator==(const Token& token) const;
 };	
 
