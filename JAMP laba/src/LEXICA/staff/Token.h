@@ -4,7 +4,7 @@
 class Token
 {
 public:
-	enum class token_type
+	enum token_type
 	{
 		key_word,
 		function,
@@ -12,6 +12,9 @@ public:
 		opErator,
 		constant,
 		divider_,
+
+		not_type,
+		not_found,
 	};
 private:
 	token_type type;
