@@ -1,12 +1,13 @@
 #pragma once
 #include "Token.h"
+#include <fstream>
 
 #define data_categories 6
 
 template <size_t reserved_place>
 class Hash_Tabel
 {
-	friend std::ostream& operator<<(std::ostream& stream, const Hash_Tabel& tabel)
+	friend std::ofstream& operator<<(std::ofstream& stream, const Hash_Tabel& tabel)
 	{
 		for (int i = 0; i < data_categories; ++i) 
 		{

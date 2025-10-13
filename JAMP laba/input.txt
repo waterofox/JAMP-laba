@@ -1,0 +1,24 @@
+PROGRAM TestProgram
+INTEGER count, index, temp
+REAL total, average, value
+REAL result1, result2
+INTEGER flag
+
+count = 15
+total = 23.5
+value = (count + total) * 2
+result1 = ITOR(count) + total
+result2 = RTOI(total) * 3
+flag = 1
+
+average = total / ITOR(count)
+temp = (count - 5) * RTOI(average)
+
+PROGRAm Error1  
+INTEGER 123var  
+REAL special@var  
+value = 12.34.56  
+result3 = unknown_var  
+flag = 25.5  
+
+END TestProgram

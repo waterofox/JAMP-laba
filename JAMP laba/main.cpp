@@ -1,21 +1,13 @@
-#include "src/LEXICA/staff/Automat.h"
+#include "src/LEXICA/Lexical_Analyzer.h"
 
-#define att std::pair<std::string,Token::token_type>
 
 int main()
 {
-	Automat test_auto(std::vector<std::pair<std::string, Token::token_type>>{
-		att("PROGRAM", Token::key_word),
-			att("END", Token::key_word),
-			att("PROGRAM", Token::key_word),
-			att("INTIGER", Token::key_word),
-			att("REAL", Token::key_word),
-			att("=", Token::opErator),
-			att("+", Token::opErator),
-			att("-", Token::opErator),
-			att("ITOR", Token::function),
-			att("RTOI", Token::function),
-	});
+	Hash_Tabel<512> tabel;
+	Lexical_Analyzer analyzer;
+	analyzer.scan_code(tabel, "input.txt");
+
+
 
 	return 0;
 }

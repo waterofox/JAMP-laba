@@ -80,21 +80,16 @@ Token Automat::operator()(const std::string& potential_lexema)
 		
 		if (cond->next_conditions.find(a_sign) == cond->next_conditions.end())
 		{
-			if (cond->num == 0)
-			{
-				if (a_sign == '.') { return Token(Token::not_type, potential_lexema); }
-				else { cond = &id_condition; }
-			}
-			else if (cond->num == id_state_num or \
+
+			if (cond->num == id_state_num or \
 				     cond->num == numerical_states.first or \
 					 cond->num == numerical_states.second)
 			{
 				return Token(Token::not_type, potential_lexema);
 			}
-			else
-			{
-				cond = &id_condition;
-			}
+			
+			cond = &id_condition;
+			--i;
 		}
 		else
 		{
