@@ -130,7 +130,13 @@ public:
 
 	void add(const Token& token)
 	{
-		Hash_Key key = hash(token);
+
+
+		Hash_Key key = this->find(token);//hash(token);
+
+		if (key.category != Token::token_type::not_found) { return; }
+
+		key = hash(token);
 
 		Hash_Node& cell = data[key.category][key.index];
 
