@@ -11,6 +11,7 @@ class Lexical_Analyzer
 
 public:
 	Lexical_Analyzer();
+	~Lexical_Analyzer();
 
 	void scan_code(Hash_Tabel<512>& tabel, const std::string& code_url);
 };

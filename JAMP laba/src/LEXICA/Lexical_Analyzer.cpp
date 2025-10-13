@@ -8,7 +8,7 @@ Lexical_Analyzer::Lexical_Analyzer()
 		att("PROGRAM", Token::key_word),
 			att("END", Token::key_word),
 			att("PROGRAM", Token::key_word),
-			att("INTGER", Token::key_word),
+			att("INTEGER", Token::key_word),
 			att("REAL", Token::key_word),
 			att("=", Token::opErator),
 			att("+", Token::opErator),
@@ -18,9 +18,14 @@ Lexical_Analyzer::Lexical_Analyzer()
 	});
 }
 
+Lexical_Analyzer::~Lexical_Analyzer()
+{
+	delete dka;
+}
+
 void Lexical_Analyzer::scan_code(Hash_Tabel<512>& tabel, const std::string& code_url)
 {
-	std::set<char> dividers = { ' ',',','(',')', '\0','\n','\r',};
+	std::set<char> dividers = { ' ',',','(',')', '\0','\n','\r'};
 	
 	std::ofstream output("resualt.txt");
 	std::ofstream log("log.txt");
@@ -44,30 +49,31 @@ void Lexical_Analyzer::scan_code(Hash_Tabel<512>& tabel, const std::string& code
 	{
 		if(dividers.count(sign) == 0)
 		{
-			lexema_buffer += sign;
-			
+			lexema_buffer += sign;	
 		}
 		else
 		{
-			std::string div_buf = "";
-			div_buf += sign;
-			Token new_token(Token::divider_,div_buf);
-			tabel.add(new_token);
-
 			if (lexema_buffer == "") { continue; }
 
 			log << "LEXEMA: " << lexema_buffer << '\n';
-			Token new_token2 = (*dka)(lexema_buffer);
+			Token new_token = (*dka)(lexema_buffer);
+
 			lexema_buffer = "";
-			if (new_token2.get_type() == Token::not_type)
+
+			if (new_token.get_type() == Token::not_type)
 			{
 				log << "INCORRECT LEXEMA\n\n";
 			}
 			else
 			{
 				log << '\n';
-				tabel.add(new_token2);
+				tabel.add(new_token);
 			}
+
+			lexema_buffer += sign;
+			tabel.add(Token(Token::divider_, lexema_buffer));
+			lexema_buffer = "";
+
 		}
 	}
 	log.close();

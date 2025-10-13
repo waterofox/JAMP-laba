@@ -69,6 +69,23 @@ Automat::Automat(const std::vector<std::pair<std::string, Token::token_type>>& l
 
 }
 
+Automat::~Automat()
+{		
+	start_condition.next_conditions['0'] = nullptr;
+	start_condition.next_conditions['1'] = nullptr;
+	start_condition.next_conditions['2'] = nullptr;
+	start_condition.next_conditions['3'] = nullptr;
+	start_condition.next_conditions['4'] = nullptr;
+	start_condition.next_conditions['5'] = nullptr;
+	start_condition.next_conditions['6'] = nullptr;
+	start_condition.next_conditions['7'] = nullptr;
+	start_condition.next_conditions['8'] = nullptr;
+	start_condition.next_conditions['9'] = nullptr;
+
+	numerical_start_condition.next_conditions['.'] = nullptr;
+
+}
+
 
 Token Automat::operator()(const std::string& potential_lexema)
 {

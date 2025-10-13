@@ -1,6 +1,7 @@
 key word: 
 	188: END 
 	201: REAL 
+	307: INTEGER 
 	381: PROGRAM 
 
 identifi: 
@@ -8,11 +9,10 @@ identifi:
 	127: flag 
 	265: total 
 	288: average 
-	307: INTEGER 
 	322: value 
 	381: TestProgram 
 	411: temp 
-	413: index 	PROGRAm 
+	413: index 
 
 operator: 
 	464: + 
@@ -20,7 +20,6 @@ operator:
 	482: = 
 
 constanta: 
-	15: 25.5 
 	203: 15 
 	397: 23.5 
 	470: 1 

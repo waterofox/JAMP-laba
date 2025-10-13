@@ -6,19 +6,12 @@ INTEGER flag
 
 count = 15
 total = 23.5
-value = (count + total) * 2
+value = (count + total) - 2
 result1 = ITOR(count) + total
-result2 = RTOI(total) * 3
+result2 = RTOI(total) + 3
 flag = 1
 
-average = total / ITOR(count)
-temp = (count - 5) * RTOI(average)
-
-PROGRAm Error1  
-INTEGER 123var  
-REAL special@var  
-value = 12.34.56  
-result3 = unknown_var  
-flag = 25.5  
+average = total - ITOR(count)
+temp = (count - 5) + RTOI(average)
 
 END TestProgram
