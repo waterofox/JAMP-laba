@@ -65,6 +65,7 @@ void Lexical_Analyzer::scan_code(Hash_Tabel<512>& tabel, const std::string& code
 			}
 			else
 			{
+				log << '\n';
 				tabel.add(new_token2);
 			}
 		}

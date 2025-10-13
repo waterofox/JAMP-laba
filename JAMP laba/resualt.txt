@@ -1,0 +1,42 @@
+key word: 
+	188: END 
+	201: REAL 
+	381: PROGRAM 
+
+identifi: 
+	110: count 
+	127: flag 
+	265: total 
+	288: average 
+	307: INTEGER 
+	322: value 
+	381: TestProgram 
+	411: temp 
+	413: index 	PROGRAm 
+
+operator: 
+	464: + 
+	466: - 
+	482: = 
+
+constanta: 
+	15: 25.5 
+	203: 15 
+	397: 23.5 
+	470: 1 
+	471: 2 
+	472: 3 
+	474: 5 
+
+divider: 
+	431: 
+ 
+	453:   
+	461: ( 
+	462: ) 
+	465: , 
+
+function: 
+	99: RTOI 
+	259: ITOR 
+

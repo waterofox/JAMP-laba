@@ -13,17 +13,17 @@ class Hash_Tabel
 		{
 			switch (i)
 			{
-			case Token::token_type::constant: {std::cout << "constanta: "; } break;
-			case Token::token_type::divider_: {std::cout << "divider: "; } break;
-			case Token::token_type::function: {std::cout << "function: "; } break;
-			case Token::token_type::key_word: {std::cout << "key word: "; } break;
-			case Token::token_type::opErator: {std::cout << "operator: "; } break;
-			case Token::token_type::identifi_: {std::cout << "identifi: "; } break;
+			case Token::token_type::constant: {stream << "constanta: "; } break;
+			case Token::token_type::divider_: {stream << "divider: "; } break;
+			case Token::token_type::function: {stream << "function: "; } break;
+			case Token::token_type::key_word: {stream << "key word: "; } break;
+			case Token::token_type::opErator: {stream << "operator: "; } break;
+			case Token::token_type::identifi_: {stream << "identifi: "; } break;
 
 			default:
 				break;
 			}
-			std::cout << std::endl;
+			 stream << std::endl;
 
 			for (int j = 0; j < reserved_place; ++j)
 			{
@@ -32,16 +32,16 @@ class Hash_Tabel
 
 				Token_Node* actual_token = cell.first_token;
 
-				std::cout << '\t' << j <<  ": " << actual_token->token->get_lexema() << ' ';
+				stream << '\t' << j <<  ": " << actual_token->token->get_lexema() << ' ';
 
 				while (actual_token->move_rigth != nullptr)
 				{
 					actual_token = actual_token->move_rigth;
-					std::cout << '\t' << actual_token->token->get_lexema() << ' ';
+					stream << '\t' << actual_token->token->get_lexema() << ' ';
 				}
-				std::cout << std::endl;
+				stream << std::endl;
 			}
-			std::cout << std::endl;
+			stream << std::endl;
 		}
 		return stream;
 	}
