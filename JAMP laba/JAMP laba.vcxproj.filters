@@ -36,6 +36,9 @@
     <ClCompile Include="src\LEXICA\staff\Token.cpp">
       <Filter>LEXICA\STAFF</Filter>
     </ClCompile>
+    <ClCompile Include="src\LEXICA\staff\Automat.cpp">
+      <Filter>LEXICA\STAFF</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -48,6 +51,9 @@
       <Filter>LEXICA\STAFF</Filter>
     </ClInclude>
     <ClInclude Include="src\LEXICA\staff\Token.h">
+      <Filter>LEXICA\STAFF</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LEXICA\staff\Automat.h">
       <Filter>LEXICA\STAFF</Filter>
     </ClInclude>
   </ItemGroup>

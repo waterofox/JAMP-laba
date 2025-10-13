@@ -17,7 +17,8 @@ class Hash_Tabel
 			case Token::token_type::function: {std::cout << "function: "; } break;
 			case Token::token_type::key_word: {std::cout << "key word: "; } break;
 			case Token::token_type::opErator: {std::cout << "operator: "; } break;
-			case Token::token_type::variant_: {std::cout << "variant: "; } break;
+			case Token::token_type::identifi_: {std::cout << "identifi: "; } break;
+
 			default:
 				break;
 			}

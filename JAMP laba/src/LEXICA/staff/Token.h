@@ -7,11 +7,11 @@ public:
 	enum token_type
 	{
 		key_word,
-		function,
-		variant_,
+		identifi_,
 		opErator,
 		constant,
 		divider_,
+		function,
 
 		not_type,
 		not_found,
