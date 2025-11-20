@@ -19,6 +19,9 @@
     <Filter Include="LEXICA\STAFF">
       <UniqueIdentifier>{58f80fa1-b2ae-4696-9c07-0262399223be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SYNTAX">
+      <UniqueIdentifier>{81b7d2f7-39e8-4260-815c-b109aa4ca55e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -39,6 +42,9 @@
     <ClCompile Include="src\LEXICA\staff\Automat.cpp">
       <Filter>LEXICA\STAFF</Filter>
     </ClCompile>
+    <ClCompile Include="src\SYNTAX\Syntactic_Analyzer.cpp">
+      <Filter>SYNTAX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -55,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="src\LEXICA\staff\Automat.h">
       <Filter>LEXICA\STAFF</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SYNTAX\Syntactic_Analyzer.h">
+      <Filter>SYNTAX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
