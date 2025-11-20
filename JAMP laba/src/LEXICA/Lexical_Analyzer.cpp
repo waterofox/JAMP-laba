@@ -12,7 +12,7 @@ Lexical_Analyzer::Lexical_Analyzer()
 			att("REAL", Token::key_word),
 			att("=", Token::opErator),
 			att("+", Token::opErator),
-			att("-", Token::opErator),
+			att("-\0", Token::opErator),
 			att("ITOR", Token::function),
 			att("RTOI", Token::function),
 	});

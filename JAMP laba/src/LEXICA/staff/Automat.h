@@ -39,6 +39,8 @@ class Automat
 	condition numerical_start_condition;
 	condition numerical_end_condiiton;
 	condition id_condition;
+	condition help;
+	condition end_help;
 
 	//id of usefull conditions
 	int id_state_num;

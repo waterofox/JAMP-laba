@@ -34,13 +34,13 @@ LEXEMA: count
 
 LEXEMA: =
 
-LEXEMA: 15
+LEXEMA: -15
 
 LEXEMA: total
 
 LEXEMA: =
 
-LEXEMA: 23.5
+LEXEMA: -23.5
 
 LEXEMA: value
 

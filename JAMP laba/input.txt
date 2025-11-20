@@ -4,8 +4,8 @@ REAL total, average, value
 REAL result1, result2
 INTEGER flag
 
-count = 15
-total = 23.5
+count = -15
+total = -23.5
 value = (count + total) - 2
 result1 = ITOR(count) + total
 result2 = RTOI(total) + 3
