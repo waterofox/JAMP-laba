@@ -100,6 +100,12 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::Descriptions_parsing()
 	tree_node descriptions_node;
 	descriptions_node.rule = "Descriptions:";
 
+	if (current_toke->get_type() != Token::key_word)
+	{
+		std::string mes = "Expected keyword. " + current_toke->get_lexema() + " met.";
+		output_error(mes);
+	}
+
 	while (current_toke->get_type() == Token::key_word)
 	{
 		descriptions_node.childs.push_back(Descr_parsing());
