@@ -1,17 +1,16 @@
-PROGRAM TestProgram
-INTEGER count, index, temp
-REAL total, average, value
-REAL result1, result2
-INTEGER flag
-
-count = -15
-total = -23.5
-value = (count + total) - 2
-result1 = ITOR(count) + total
-result2 = RTOI(total) + 3
-flag = 1
-
-average = total - ITOR(count)
-temp = (count - 5) + RTOI(average)
-
-END TestProgram
+PROGRAM ExampleBigProgram
+INTEGER i,j,k,n,sum,count
+REAL x,y,z,value,result,temp
+i = 10
+j = i + 5
+k = j + 2
+n = k - i
+sum = n + j
+count = sum + 2
+x = 3.14
+y = x  +  1.5
+z = y - z
+value = RTOI(x) + count
+temp = value - 2
+result = temp + z
+END ExampleBigProgram

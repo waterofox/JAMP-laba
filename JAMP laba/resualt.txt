@@ -5,14 +5,19 @@ key word:
 	381: PROGRAM 
 
 identifi: 
+	14: i 
+	15: j 
+	16: k 
+	19: n 
+	29: x 
+	30: y 
+	31: z 
+	91: ExampleBigProgram 
 	110: count 
-	127: flag 
-	265: total 
-	288: average 
+	260: result 
 	322: value 
-	381: TestProgram 
+	410: sum 
 	411: temp 
-	413: index 
 
 operator: 
 	464: + 
@@ -20,16 +25,13 @@ operator:
 	482: = 
 
 constanta: 
-	216: -15 
-	218: -23.5 
-	470: 1 
+	198: 10 
+	267: 3.14 
+	377: 1.5 
 	471: 2 
-	472: 3 
 	474: 5 
 
 divider: 
-	431: 
- 
 	453:   
 	461: ( 
 	462: ) 
@@ -37,5 +39,4 @@ divider:
 
 function: 
 	99: RTOI 
-	259: ITOR 
 

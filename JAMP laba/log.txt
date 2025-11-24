@@ -1,120 +1,159 @@
 LEXEMA: PROGRAM
 
-LEXEMA: TestProgram
+LEXEMA: ExampleBigProgram
 
 LEXEMA: INTEGER
 
+LEXEMA: i
+
+LEXEMA: j
+
+LEXEMA: k
+
+LEXEMA: n
+
+LEXEMA: sum
+
 LEXEMA: count
 
-LEXEMA: index
+LEXEMA: REAL
+
+LEXEMA: x
+
+LEXEMA: y
+
+LEXEMA: z
+
+LEXEMA: value
+
+LEXEMA: result
 
 LEXEMA: temp
 
-LEXEMA: REAL
-
-LEXEMA: total
-
-LEXEMA: average
-
-LEXEMA: value
-
-LEXEMA: REAL
-
-LEXEMA: result1
-INCORRECT LEXEMA
-
-LEXEMA: result2
-INCORRECT LEXEMA
-
-LEXEMA: INTEGER
-
-LEXEMA: flag
-
-LEXEMA: count
+LEXEMA: i
 
 LEXEMA: =
 
-LEXEMA: -15
+LEXEMA: 10
 
-LEXEMA: total
-
-LEXEMA: =
-
-LEXEMA: -23.5
-
-LEXEMA: value
+LEXEMA: j
 
 LEXEMA: =
 
-LEXEMA: count
+LEXEMA: i
 
 LEXEMA: +
 
-LEXEMA: total
+LEXEMA: 5
+
+LEXEMA: k
+
+LEXEMA: =
+
+LEXEMA: j
+
+LEXEMA: +
+
+LEXEMA: 2
+
+LEXEMA: n
+
+LEXEMA: =
+
+LEXEMA: k
+
+LEXEMA: -
+
+LEXEMA: i
+
+LEXEMA: sum
+
+LEXEMA: =
+
+LEXEMA: n
+
+LEXEMA: +
+
+LEXEMA: j
+
+LEXEMA: count
+
+LEXEMA: =
+
+LEXEMA: sum
+
+LEXEMA: +
+
+LEXEMA: 2
+
+LEXEMA: x
+
+LEXEMA: =
+
+LEXEMA: 3.14
+
+LEXEMA: y
+
+LEXEMA: =
+
+LEXEMA: x
+
+LEXEMA: 
+INCORRECT LEXEMA
+
+LEXEMA: +
+
+LEXEMA: 
+INCORRECT LEXEMA
+
+LEXEMA: 1.5
+
+LEXEMA: z
+
+LEXEMA: =
+
+LEXEMA: y
+
+LEXEMA: -
+
+LEXEMA: z
+
+LEXEMA: value
+
+LEXEMA: =
+
+LEXEMA: RTOI
+
+LEXEMA: x
+
+LEXEMA: 
+INCORRECT LEXEMA
+
+LEXEMA: +
+
+LEXEMA: count
+
+LEXEMA: temp
+
+LEXEMA: =
+
+LEXEMA: value
 
 LEXEMA: -
 
 LEXEMA: 2
 
-LEXEMA: result1
-INCORRECT LEXEMA
+LEXEMA: result
 
 LEXEMA: =
-
-LEXEMA: ITOR
-
-LEXEMA: count
-
-LEXEMA: +
-
-LEXEMA: total
-
-LEXEMA: result2
-INCORRECT LEXEMA
-
-LEXEMA: =
-
-LEXEMA: RTOI
-
-LEXEMA: total
-
-LEXEMA: +
-
-LEXEMA: 3
-
-LEXEMA: flag
-
-LEXEMA: =
-
-LEXEMA: 1
-
-LEXEMA: average
-
-LEXEMA: =
-
-LEXEMA: total
-
-LEXEMA: -
-
-LEXEMA: ITOR
-
-LEXEMA: count
 
 LEXEMA: temp
 
-LEXEMA: =
-
-LEXEMA: count
-
-LEXEMA: -
-
-LEXEMA: 5
-
 LEXEMA: +
 
-LEXEMA: RTOI
-
-LEXEMA: average
+LEXEMA: z
 
 LEXEMA: END
+
+LEXEMA: ExampleBigProgram
 
