@@ -48,7 +48,6 @@ private:
 	tree_node Operator_parsing();
 	tree_node Expr_parsing();
 	tree_node Const_parsing();
-	tree_node Operator_Expr_parsing();
 	tree_node Function_parsing();
 
 	tree_node Divider_parsing();

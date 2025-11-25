@@ -2,6 +2,27 @@
 
 #include <Windows.h>
 
+#define SKIP_SPACING 	while (current_toke->get_type() == Token::divider_ and current_toke->get_lexema() == " ") \
+	{ \
+		++current_toke; \
+	}
+#define CONTINUE_EXPR if (current_toke->get_type() == Token::opErator) \
+			{ \
+				if (current_toke->get_lexema() == "=") \
+				{\
+					std::string mes = "Unexpected operator. Expected <+/->. " + current_toke->get_lexema() + " " + " met.";\
+					output_error(mes);\
+				}\
+				else \
+				{\
+					expr_node.childs.push_back(Operator_parsing()); \
+					\
+					SKIP_SPACING\
+						\
+						expr_node.childs.push_back(Expr_parsing());\
+				}\
+			}
+
 void Syntactic_Analyzer::output_error(const std::string& error)
 {
 	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -217,16 +238,7 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::Descr_parsing()
 	
 	descr_node.childs.push_back(Type_parsing());
 
-	while (current_toke->get_type() == Token::divider_)
-	{
-		if (current_toke->get_lexema() != " ") 
-		{
-			std::string mes = "Unexpected separator. Expected < >. " + current_toke->get_lexema() + " " + " met.";
-			output_error(mes);
-		}
-		++current_toke;
-		
-	}
+	SKIP_SPACING
 
 	descr_node.childs.push_back(VarList_parsing());
 
@@ -266,40 +278,24 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::VarList_parsing()
 
 	varList_node.childs.push_back(Id_parsing());
 
-	bool flag = false;
-	bool falg2 = false;
-	while (current_toke->get_type() == Token::divider_)
-	{
-		flag = true;
+	SKIP_SPACING
 
-		if (current_toke->get_lexema() != " " and current_toke->get_lexema() != ",")
-		{
-			std::string mes = "Unexpected separator. Expected < /,>. "  + current_toke->get_lexema() + " " + " met.";
-			output_error(mes);
-		}
+	if (current_toke->get_type() == Token::divider_)
+	{
 		if (current_toke->get_lexema() == ",") 
-		{ 
-			falg2 = true;
-			varList_node.childs.push_back(Divider_parsing()); 
-			--current_toke;
-		}
-		++current_toke;
-		
-	}
-
-	if (flag) // another id is exist
-	{
-		if (falg2) //correct divider
 		{
+			varList_node.childs.push_back(Divider_parsing());
+			
+			SKIP_SPACING
+
 			varList_node.childs.push_back(VarList_parsing());
 		}
 		else
 		{
-			std::string mes = "Unexpected separator. Expected <,>. "  + current_toke->get_lexema() + " " + " met.";
+			std::string mes = "Unexpected separator. Expected <,>. " + current_toke->get_lexema() + " " + " met.";
 			output_error(mes);
 		}
 	}
-
 	return varList_node;
 }
 
@@ -310,33 +306,31 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::Op_parsing()
 	tree_node op_node;
 	op_node.rule = "Op:";
 	op_node.childs.push_back(Id_parsing());
-	while (current_toke->get_type() == Token::divider_)
+
+	SKIP_SPACING
+
+	if (current_toke->get_type() == Token::divider_)
 	{
-		if (current_toke->get_lexema() != " ")
-		{
-			std::string mes = "Unexpected separator between the operator and the operand. Expected < >. "  + current_toke->get_lexema() + " " + " met.";
-			output_error(mes);
-		}
-		++current_toke;
-		
-	}
-	if (current_toke->get_lexema() == "=") { op_node.childs.push_back(Operator_parsing()); }
-	else
-	{
-		std::string mes = "Expected <=>. " + current_toke->get_lexema() + " " + " met.";
+		std::string mes = "Unexpected separator between the operator and the operand. Expected < >. " + current_toke->get_lexema() + " " + " met.";
 		output_error(mes);
 	}
-	while (current_toke->get_type() == Token::divider_)
+	if (current_toke->get_type() == Token::opErator)
 	{
-		if (current_toke->get_lexema() == "(") { break; }
-		if (current_toke->get_lexema() != " ")
+		if (current_toke->get_lexema() == "=") { op_node.childs.push_back(Operator_parsing()); }
+		else
 		{
-			std::string mes = "Unexpected separator between the operator and the operand. Expected < >. "  + current_toke->get_lexema() + " " + " met.";
+			std::string mes = "Expected <=>. " + current_toke->get_lexema() + " " + " met.";
 			output_error(mes);
 		}
-		++current_toke;
-		
 	}
+	else
+	{
+		std::string mes = "Expected Operator. " + current_toke->get_lexema() + " " + " met.";
+		output_error(mes);
+	}
+
+	SKIP_SPACING
+
 	op_node.childs.push_back(Expr_parsing());
 
 	return op_node;
@@ -378,41 +372,6 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::Const_parsing()
 
 	return const_node;
 }
-
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::Operator_Expr_parsing()
-{
-	
-	tree_node op_expr_node;
-	op_expr_node.rule = "Operator Expr:";
-	
-	if (current_toke->get_type() != Token::opErator)
-	{
-		std::string mes = "Expected operator. "  + current_toke->get_lexema() + " " + " met.";
-		output_error(mes);
-	}
-	if (current_toke->get_lexema() != "+" and current_toke->get_lexema() != "-")
-	{
-		std::string mes = "Unexpected operator. Expected <+/->. "  + current_toke->get_lexema() + " " + " met.";
-		output_error(mes);
-	}
-	op_expr_node.childs.push_back(Operator_parsing());
-	//skiping " "
-	while (current_toke->get_type() == Token::divider_)
-	{
-
-		if (current_toke->get_lexema() != " ")
-		{
-			std::string mes = "Unexpected separator between the operator and the operand. Expected < >. "  + current_toke->get_lexema() + " " + " met.";
-			output_error(mes);
-		}
-		++current_toke;
-		
-	}
-	op_expr_node.childs.push_back(Expr_parsing());
-
-	return op_expr_node;
-}
-
 Syntactic_Analyzer::tree_node Syntactic_Analyzer::Function_parsing()
 {
 	
@@ -443,30 +402,12 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::Expr_parsing()
 	case Token::identifi_: {
 		expr_node.childs.push_back(Id_parsing());
 
-		bool flag = false;
-		while (current_toke->get_type() == Token::divider_)
-		{
-			flag = true; //detect diveider => then trying to parse Id +/- Expr
+		SKIP_SPACING
 
-			if (current_toke->get_lexema() == ")"){ 
-				flag = false;  break;
-			}
-			if (current_toke->get_lexema() != " ")
-			{
-				std::string mes = "Unexpected separator between the operator and the operand. Expected < >. "  + current_toke->get_lexema() + " " + " met.";
-				output_error(mes);
-			}
-			++current_toke;
-			
-		}
+			CONTINUE_EXPR
 
-
-		if (flag)
-		{
-			expr_node.childs.push_back(Operator_Expr_parsing());
-			expr_node.rule = "Id Operator Expr:";
-		}
 		return expr_node;
+	
 	} break;
 
 
@@ -474,27 +415,10 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::Expr_parsing()
 	case Token::constant: {
 		expr_node.childs.push_back(Const_parsing());
 
-		bool flag = false;
-		while (current_toke->get_type() == Token::divider_)
-		{
-			flag = true; //detect diveider => then trying to parse Const +/- Expr
-			if (current_toke->get_lexema() == ")") {
-				flag = false;  break;
-			}
-			if (current_toke->get_lexema() != " ")
-			{
-				std::string mes = "Unexpected separator between the operator and the operand. Expected < >. "  + current_toke->get_lexema() + " " + " met.";
-				output_error(mes);
-			}
-			++current_toke;
-			
-		}
+		SKIP_SPACING
 
-		if (flag)
-		{
-			expr_node.childs.push_back(Operator_Expr_parsing());
-			expr_node.rule = "Const Operator Expr";
-		}
+			CONTINUE_EXPR
+
 		return expr_node;
 	}break;
 	case Token::divider_: {
@@ -502,111 +426,91 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::Expr_parsing()
 
 		if (current_toke->get_lexema() != "(")
 		{
-			std::string mes = "Unexpected separator. Expected <(>. "  + current_toke->get_lexema() + " " + " met.";
+			std::string mes = "Unexpected separator. Expected <(>. " + current_toke->get_lexema() + " " + " met.";
 			output_error(mes);
 		}
-		expr_node.childs.push_back(Divider_parsing());
-		while (current_toke->get_type() == Token::divider_)
+		else
 		{
-			if (current_toke->get_lexema() != " ") 
-			{
-				std::string mes = "Unexpected separator. Expected < >. "  + current_toke->get_lexema() + " " + " met.";
-				output_error(mes);
-			}
-			++current_toke;
-			
-		}
-		expr_node.childs.push_back(Expr_parsing());
+			expr_node.childs.push_back(Divider_parsing());
 
-		while (current_toke->get_type() == Token::divider_)
-		{
-			if (current_toke->get_lexema() == ")") { break; }
-			if (current_toke->get_lexema() != " ")
-			{
-				std::string mes = "Unexpected separator. Expected < >. "  + current_toke->get_lexema() + " " + " met.";
-				output_error(mes);
-			}
-			++current_toke;
-		}
-		expr_node.childs.push_back(Divider_parsing());
+			SKIP_SPACING
 
-		bool flag = false;
-		while (current_toke->get_type() == Token::divider_)
-		{
-			flag = true; //detect diveider => then trying to parse Const +/- Expr
-			if (current_toke->get_lexema() != " ")
-			{
-				std::string mes = "Unexpected separator between the operator and the operand. Expected < >. "  + current_toke->get_lexema() + " " + " met.";
-				output_error(mes);
-			}
-			++current_toke;
-			
+				expr_node.childs.push_back(Expr_parsing());
+
+			SKIP_SPACING
+
+				if (current_toke->get_lexema() != ")")
+				{
+					std::string mes = "Unexpected separator. Expected <)>. " + current_toke->get_lexema() + " " + " met.";
+					output_error(mes);
+				}
+				else
+				{
+					expr_node.childs.push_back(Divider_parsing());
+				}
+
+			SKIP_SPACING
+
+				CONTINUE_EXPR
 		}
 
-		if (flag)
-		{
-			expr_node.childs.push_back(Operator_Expr_parsing());
-			expr_node.rule = "( Expr ) Operator Expr";
-		}
+
+
 		return expr_node;
-
-
 	}break;
 	case Token::function: {
 		expr_node.rule = "Function( Expr ):";
 		expr_node.childs.push_back(Function_parsing());
-
-		if (current_toke->get_lexema() != "(")
+		
+		if (current_toke->get_type() != Token::divider_)
 		{
-			std::string mes = "Unexpected separator. Expected <(>. "  + current_toke->get_lexema() + " " + " met.";
+			std::string mes = "Expected separator after function call. " + current_toke->get_lexema() + " " + " met.";
 			output_error(mes);
 		}
-		expr_node.childs.push_back(Divider_parsing());
-		while (current_toke->get_type() == Token::divider_)
+		else
 		{
-			if (current_toke->get_lexema() != " ")
+			if (current_toke->get_lexema() != "(")
 			{
-				std::string mes = "Unexpected separator. Expected < >. "  + current_toke->get_lexema() + " " + " met.";
+				std::string mes = "Expected separator <(> after function call. " + current_toke->get_lexema() + " " + " met.";
 				output_error(mes);
 			}
-			++current_toke;
-			
-		}
-		expr_node.childs.push_back(Expr_parsing());
-
-		while (current_toke->get_type() == Token::divider_)
-		{
-			if (current_toke->get_lexema() == ")") { break; }
-			if (current_toke->get_lexema() != " ")
+			else
 			{
-				std::string mes = "Unexpected separator. Expected < >. "  + current_toke->get_lexema() + " " + " met.";
-				output_error(mes);
-			}
-			++current_toke;
-			
-		}
-		expr_node.childs.push_back(Divider_parsing());
+				expr_node.childs.push_back(Divider_parsing());
+				
+				SKIP_SPACING
+					expr_node.childs.push_back(Expr_parsing());
+				SKIP_SPACING
 
-		bool flag = false;
-		while (current_toke->get_type() == Token::divider_)
-		{
-			flag = true; //detect diveider => then trying to parse Const +/- Expr
-			if (current_toke->get_lexema() != " ")
-			{
-				std::string mes = "Unexpected separator between the operator and the operand. Expected < >. "  + current_toke->get_lexema() + " " + " met.";
-				output_error(mes);
-			}
-			++current_toke;
-			
-		}
+					if (current_toke->get_type() != Token::divider_)
+					{
+						std::string mes = "Expected ender-separator after function call. " + current_toke->get_lexema() + " " + " met.";
+						output_error(mes);
+					}
+					else
+					{
+							if (current_toke->get_lexema() != ")")
+							{
+								std::string mes = "Expected ender-separator <)> after function call. " + current_toke->get_lexema() + " " + " met.";
+								output_error(mes);
+							}
+							else
+							{
+								expr_node.childs.push_back(Divider_parsing());
+							}
+					}
+				SKIP_SPACING
 
-		if (flag)
-		{
-			expr_node.childs.push_back(Operator_Expr_parsing());
-			expr_node.rule = "Function( Expr ) Operator Expr";
+					CONTINUE_EXPR
+
+			}
 		}
+		
+
+
+
+
 		return expr_node;
-
 	}break;
 	default: 
 	{
