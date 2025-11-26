@@ -97,17 +97,8 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::Begin_parsing()
 	++current_toke;
 	
 
-	while (current_toke->get_type() == Token::divider_)
-	{
-		if (current_toke->get_lexema() != " ") 
-		{
-			std::string mes = "Unexpected separator. Expected < >. "  + current_toke->get_lexema() + " " + " met.";
-			output_error(mes);
-		}
-		++current_toke;
-		
-	}
-
+	SKIP_SPACING
+	
 	begin_node.childs.push_back(Id_parsing());
 	
 	
@@ -274,9 +265,9 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::VarList_parsing()
 {
 	
 	tree_node varList_node;
-	varList_node.rule = "Var:";
+	varList_node.rule = "VarList:";
 
-	varList_node.childs.push_back(Id_parsing());
+	varList_node.childs.push_back(Var_parsig());
 
 	SKIP_SPACING
 
@@ -297,6 +288,15 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::VarList_parsing()
 		}
 	}
 	return varList_node;
+}
+
+Syntactic_Analyzer::tree_node Syntactic_Analyzer::Var_parsig()
+{
+	tree_node var_node;
+	var_node.rule = "Var:";
+	var_node.childs.push_back(Id_parsing());
+
+	return var_node;
 }
 
 Syntactic_Analyzer::tree_node Syntactic_Analyzer::Op_parsing()

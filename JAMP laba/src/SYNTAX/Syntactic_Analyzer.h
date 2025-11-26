@@ -34,22 +34,27 @@ public:
 
 private:
 
+	//MAIN PARSERS
 	tree_node Begin_parsing();
 	tree_node Descriptions_parsing();
 	tree_node Operators_parsing();
 	tree_node End_parsing();
 
-	tree_node Id_parsing();
+	//DESCRIPTIONS
 	tree_node Descr_parsing();
 	tree_node Type_parsing();
 	tree_node VarList_parsing();
+	tree_node Var_parsig();
+	tree_node Id_parsing();
 	
+	//OPERATIONS
 	tree_node Op_parsing();
 	tree_node Operator_parsing();
 	tree_node Expr_parsing();
 	tree_node Const_parsing();
 	tree_node Function_parsing();
 
+	//NE PRIDUMAL CATEGORIY
 	tree_node Divider_parsing();
 
 

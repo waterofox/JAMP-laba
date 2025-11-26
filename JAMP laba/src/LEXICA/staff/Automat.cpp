@@ -72,6 +72,7 @@ Automat::Automat(const std::vector<std::pair<std::string, Token::token_type>>& l
 
 			if (cond->next_conditions.find(a_sign) != cond->next_conditions.end())
 			{
+
 				cond = cond->next_conditions[a_sign];
 			}
 			else
@@ -146,6 +147,7 @@ Token Automat::operator()(const std::string& potential_lexema)
 		{
 			cond = cond->next_conditions[a_sign];
 		}
+
 	}
 
 	return Token(cond->type, potential_lexema);
