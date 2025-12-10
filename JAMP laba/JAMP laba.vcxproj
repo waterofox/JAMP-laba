@@ -19,21 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Application.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\LEXICA\Lexical_Analyzer.cpp" />
     <ClCompile Include="src\LEXICA\staff\Automat.cpp" />
     <ClCompile Include="src\LEXICA\staff\Hash_Tabel.cpp" />
     <ClCompile Include="src\LEXICA\staff\Token.cpp" />
     <ClCompile Include="src\SYNTAX\Syntactic_Analyzer.cpp" />
+    <ClCompile Include="src\Сompiler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application.h" />
     <ClInclude Include="src\LEXICA\Lexical_Analyzer.h" />
     <ClInclude Include="src\LEXICA\staff\Automat.h" />
     <ClInclude Include="src\LEXICA\staff\Hash_Tabel.h" />
     <ClInclude Include="src\LEXICA\staff\Token.h" />
     <ClInclude Include="src\SYNTAX\Syntactic_Analyzer.h" />
+    <ClInclude Include="src\Сompiler.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
