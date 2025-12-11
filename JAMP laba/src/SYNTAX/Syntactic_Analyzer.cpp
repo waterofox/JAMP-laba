@@ -43,9 +43,9 @@ void Syntactic_Analyzer::continue_parsing(const Token& token_to_parse, tree_node
 	case Program: { Program_parsing(); } break;
 	case Begin:   { Begin_parsing(parent_node); }break;
 	case End: { End_parsing(); } break;
-	case Descriptions: { Descriptions_parsing(); } break;
+	case Descriptions: { Descriptions_parsing(parent_node); } break;
 	case Operators: { Operators_parsing(); } break;
-	case Descr: { Descr_parsing(); } break;
+	case Descr: { Descr_parsing(parent_node); } break;
 	case Type: { Type_parsing(); } break;
 	case VarList: { VarList_parsing(); } break;
 	case Op: { Op_parsing(); } break;
@@ -153,35 +153,92 @@ void Syntactic_Analyzer::Id_parsing(tree_node* parent_node)
 	
 }
 
-
-
-
-
-
-
-
-
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::Descriptions_parsing()
+void Syntactic_Analyzer::Descriptions_parsing(tree_node* parent)
 {
-	/*
 	tree_node descriptions_node;
-	descriptions_node.rule = "Descriptions:";
+	descriptions_node.rule = rules::Descriptions;
 
-	if (current_toke->get_type() != Token::key_word)
+	parent->childs.push_back(descriptions_node);
+
+	comp->expected_token = Token::token_type::key_word;
+	comp->current_rule.push(rules::Descr);
+	continue_parsing(current_toke, &parent->childs.back());
+}
+
+void Syntactic_Analyzer::Descr_parsing(tree_node* parent_node)
+{
+	if (comp->expected_token == Token::token_type::key_word)
 	{
-		std::string mes = "Expected keyword. " + current_toke->get_lexema() + " met.";
+		++parsed_line_counter;
+		tree_node descr_node;
+		descr_node.rule = rules::Descr;
+
+		parent_node->childs.push_back(descr_node);
+		comp->current_rule.push(Type);
+
+		continue_parsing(current_toke, &parent_node->childs.back());
+
+		comp->expected_token = Token::token_type::identifi_;
+		comp->current_rule.push(rules::VarList);
+	}
+	else if (comp->expected_token == Token::token_type::identifi_)
+	{
+
+	}
+
+
+}
+void Syntactic_Analyzer::Type_parsing(tree_node* parent_node)
+{
+	tree_node type_node;
+	type_node.rule = rules::Type;
+
+	if (current_toke.get_type() != Token::key_word)
+	{
+		std::string mes = "Expected keyword. " + current_toke.get_lexema() + " " + " met.";
 		output_error(mes);
 	}
 
-	while (current_toke->get_type() == Token::key_word)
+	if (current_toke.get_lexema() != "INTEGER" and current_toke.get_lexema() != "REAL")
 	{
-		descriptions_node.childs.push_back(Descr_parsing());
+		std::string mes = "Expected <INTEGER/REAL>. " + current_toke.get_lexema() + " " + " met.";
+		output_error(mes);
 	}
 
-	return descriptions_node;
+	type_node.data = current_toke.get_lexema();
+
+	parent_node->childs.push_back(type_node);
+
+	//end type
+	comp->current_rule.pop();
+
+	/*
+	tree_node type_node;
+	type_node.rule = "Type:";
+
+	if (current_toke->get_type() != Token::key_word)
+	{
+		std::string mes = "Expected keyword. "  + current_toke->get_lexema() + " " + " met.";
+		output_error(mes);
+	}
+
+	if (current_toke->get_lexema() != "INTEGER" and current_toke->get_lexema() != "REAL")
+	{
+		std::string mes = "Expected <INTEGER/REAL>. "  + current_toke->get_lexema() + " " + " met.";
+		output_error(mes);
+	}
+
+	//matched token
+	type_node.data = current_toke->get_lexema();
+	++current_toke;
+
+
+	return type_node;
 	*/
-	return tree_node();
 }
+
+
+
 
 Syntactic_Analyzer::tree_node Syntactic_Analyzer::Operators_parsing()
 {
@@ -258,51 +315,6 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::End_parsing()
 	begin_node.childs.push_back(Id_parsing());
 
 	return begin_node;
-	*/
-	return tree_node();
-}
-
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::Descr_parsing()
-{
-	/*
-	++parsed_line_counter;
-	tree_node descr_node;
-	descr_node.rule = "Descr:";
-	
-	descr_node.childs.push_back(Type_parsing());
-
-	SKIP_SPACING
-
-	descr_node.childs.push_back(VarList_parsing());
-
-	return descr_node;
-	*/
-	return tree_node();
-}
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::Type_parsing()
-{
-	/*
-	tree_node type_node;
-	type_node.rule = "Type:";
-
-	if (current_toke->get_type() != Token::key_word)
-	{
-		std::string mes = "Expected keyword. "  + current_toke->get_lexema() + " " + " met.";
-		output_error(mes);
-	}
-
-	if (current_toke->get_lexema() != "INTEGER" and current_toke->get_lexema() != "REAL")
-	{
-		std::string mes = "Expected <INTEGER/REAL>. "  + current_toke->get_lexema() + " " + " met.";
-		output_error(mes);
-	}
-
-	//matched token
-	type_node.data = current_toke->get_lexema();
-	++current_toke;
-	
-
-	return type_node;
 	*/
 	return tree_node();
 }

@@ -42,13 +42,13 @@ private:
 
 	//MAIN PARSERS
 	void Begin_parsing(tree_node* parent_node);
-	tree_node Descriptions_parsing();
+	void Descriptions_parsing(tree_node* parent);
 	tree_node Operators_parsing();
 	tree_node End_parsing();
 
 	//DESCRIPTIONS
-	tree_node Descr_parsing();
-	tree_node Type_parsing();
+	void Descr_parsing(tree_node* parent_node);
+	void Type_parsing(tree_node* parent_node);
 	tree_node VarList_parsing();
 	tree_node Var_parsig();
 	void Id_parsing(tree_node* parent_node);
