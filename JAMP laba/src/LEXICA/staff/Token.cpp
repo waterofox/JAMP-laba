@@ -6,6 +6,11 @@ Token::Token(const token_type& type, const std::string& lexema)
 	this->lexema = lexema;
 }
 
+Token::Token()
+{
+
+}
+
 const Token::token_type& Token::get_type() const
 {
 	return this->type;

@@ -1,10 +1,10 @@
 #include "Lexical_Analyzer.h"
-
+#include "../Compiler.h";
 
 
 #define att std::pair<std::string,Token::token_type>
 
-Lexical_Analyzer::Lexical_Analyzer(std::vector<Token>& token_stream)
+Lexical_Analyzer::Lexical_Analyzer(Compiler* comp)
 {
 	dka = new Automat(std::vector<std::pair<std::string, Token::token_type>>{
 		att("PROGRAM", Token::key_word),
@@ -19,7 +19,7 @@ Lexical_Analyzer::Lexical_Analyzer(std::vector<Token>& token_stream)
 			att("RTOI", Token::function),
 	});
 
-	this->token_stream = &token_stream;
+	this->comp = comp;
 }
 
 Lexical_Analyzer::~Lexical_Analyzer()
@@ -74,14 +74,16 @@ void Lexical_Analyzer::scan_code(Hash_Tabel<512>& tabel, const std::string& code
 			{
 				log << '\n';
 				tabel.add(new_token);
-				token_stream->push_back(new_token);
+				comp->delegate_token(new_token);
+				
 			}
 
 			if (divider_tmp != '\n' and divider_tmp != '\r' and divider_tmp != '\0')
 			{
 				std::string tmp = ""; tmp += divider_tmp;
 				tabel.add(Token(Token::divider_, tmp));
-				token_stream->push_back(Token(Token::divider_, tmp));
+				comp->delegate_token(Token(Token::divider_, tmp));
+				//token_stream->push_back(Token(Token::divider_, tmp));
 			}
 			lexema_buffer = "";
 
@@ -104,7 +106,8 @@ void Lexical_Analyzer::scan_code(Hash_Tabel<512>& tabel, const std::string& code
 		{
 			log << '\n';
 			tabel.add(new_token);
-			token_stream->push_back(new_token);
+			comp->delegate_token(new_token);
+			//token_stream->push_back(new_token);
 		}
 		lexema_buffer = "";
 	}

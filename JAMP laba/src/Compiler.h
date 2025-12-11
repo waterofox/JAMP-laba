@@ -3,25 +3,25 @@
 #include "LEXICA/Lexical_Analyzer.h"
 #include "SYNTAX/Syntactic_Analyzer.h"
 
-class Compiler;
-
-using connection = void(Compiler::*)(const Token&);
-
 enum rules
 {
 	//var 12
 	Program,Begin,End,Descriptions,Operators,Descr, Type, VarList, Op, Expr, Id, Const,
 	
 	//sub rules
-	Divider, Operator,
+	Divider, Operator, 
 };
 
-class Ñompiler
+class Compiler
 {
+	friend Syntactic_Analyzer;
 private:
 	//usefull fields
 	Token::token_type expected_token = Token::token_type::not_type;
 	std::stack<rules> current_rule;
+	Syntactic_Analyzer::tree_node* actual_node = nullptr;
+	
+	Hash_Tabel<512> tokens_table;
 
 	//Lex&Syn analyzers connection
 public:
@@ -31,8 +31,10 @@ private:
 	Syntactic_Analyzer* syntax = nullptr;
 
 public:
-	Ñompiler();
-	~Ñompiler();
+	void compile_file(const std::string& file_path);
+
+	Compiler();
+	~Compiler();
 
 };
 

@@ -1,16 +1,1 @@
 PROGRAM ExampleBigProgram
-INTEGER i,j,k,n,sum,count
-REAL x,y,z,value,result,temp
-i = 10
-j = ( 2 + 1)
-k = j + 2
-n = k - i
-sum = n + j
-count = sum + 2
-x = 3.14
-y = x  +  1.5
-z = y - z
-value = RTOI(x) + count
-temp = value - 2
-result = temp + z
-END ExampleBigProgram

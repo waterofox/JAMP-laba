@@ -21,6 +21,7 @@ private:
 	std::string lexema;
 public:
 	Token(const token_type& type, const std::string& lexema);
+	Token();
 
 	const token_type& get_type() const;
 	const std::string& get_lexema() const;

@@ -1,0 +1,15 @@
+key word: 
+	381: PROGRAM 
+
+identifi: 
+	91: ExampleBigProgram 
+
+operator: 
+
+constanta: 
+
+divider: 
+	453:   
+
+function: 
+

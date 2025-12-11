@@ -42,7 +42,7 @@
     <ClCompile Include="src\SYNTAX\Syntactic_Analyzer.cpp">
       <Filter>SYNTAX</Filter>
     </ClCompile>
-    <ClCompile Include="src\Сompiler.cpp">
+    <ClCompile Include="src\Compiler.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,7 +62,7 @@
     <ClInclude Include="src\SYNTAX\Syntactic_Analyzer.h">
       <Filter>SYNTAX</Filter>
     </ClInclude>
-    <ClInclude Include="src\Сompiler.h">
+    <ClInclude Include="src\Compiler.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
