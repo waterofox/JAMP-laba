@@ -46,8 +46,8 @@ void Syntactic_Analyzer::continue_parsing(const Token& token_to_parse, tree_node
 	case Descriptions: { Descriptions_parsing(parent_node); } break;
 	case Operators: { Operators_parsing(); } break;
 	case Descr: { Descr_parsing(parent_node); } break;
-	case Type: { Type_parsing(); } break;
-	case VarList: { VarList_parsing(); } break;
+	case Type: { Type_parsing(parent_node); } break;
+	case VarList: { VarList_parsing(parent_node); } break;
 	case Op: { Op_parsing(); } break;
 	case Expr: { Expr_parsing(); } break;
 	case Id: { Id_parsing(parent_node); } break;
@@ -169,6 +169,13 @@ void Syntactic_Analyzer::Descr_parsing(tree_node* parent_node)
 {
 	if (comp->expected_token == Token::token_type::key_word)
 	{
+		if (current_toke.get_type() != Token::key_word)
+		{
+			//end of Descriptions
+			comp->current_rule.pop();
+
+		}
+
 		++parsed_line_counter;
 		tree_node descr_node;
 		descr_node.rule = rules::Descr;
@@ -183,10 +190,8 @@ void Syntactic_Analyzer::Descr_parsing(tree_node* parent_node)
 	}
 	else if (comp->expected_token == Token::token_type::identifi_)
 	{
-
+		
 	}
-
-
 }
 void Syntactic_Analyzer::Type_parsing(tree_node* parent_node)
 {
@@ -211,32 +216,67 @@ void Syntactic_Analyzer::Type_parsing(tree_node* parent_node)
 
 	//end type
 	comp->current_rule.pop();
-
-	/*
-	tree_node type_node;
-	type_node.rule = "Type:";
-
-	if (current_toke->get_type() != Token::key_word)
-	{
-		std::string mes = "Expected keyword. "  + current_toke->get_lexema() + " " + " met.";
-		output_error(mes);
-	}
-
-	if (current_toke->get_lexema() != "INTEGER" and current_toke->get_lexema() != "REAL")
-	{
-		std::string mes = "Expected <INTEGER/REAL>. "  + current_toke->get_lexema() + " " + " met.";
-		output_error(mes);
-	}
-
-	//matched token
-	type_node.data = current_toke->get_lexema();
-	++current_toke;
-
-
-	return type_node;
-	*/
 }
 
+void Syntactic_Analyzer::VarList_parsing(tree_node* parent_node)
+{
+
+	if (comp->expected_token == Token::token_type::identifi_)
+	{
+		SKIP_SPACE
+		
+		tree_node var_list_node;
+		var_list_node.rule = rules::VarList;
+
+		parent_node->childs.push_back(var_list_node);
+
+		comp->current_rule.push(rules::Id);
+		continue_parsing(current_toke, &parent_node->childs.back());
+
+		comp->expected_token = Token::token_type::divider_;
+	}
+	else if (comp->expected_token == Token::token_type::divider_)
+	{
+		SKIP_SPACE
+
+		if (current_toke.get_type() != Token::divider_) 
+		{
+			//end of varlist
+			comp->current_rule.pop();
+			
+			//potential new descr
+			comp->expected_token = Token::token_type::key_word;
+		}
+	}
+
+
+	/*
+	tree_node varList_node;
+	varList_node.rule = "VarList:";
+
+	varList_node.childs.push_back(Var_parsig());
+
+	SKIP_SPACING
+
+	if (current_toke->get_type() == Token::divider_)
+	{
+		if (current_toke->get_lexema() == ",")
+		{
+			varList_node.childs.push_back(Divider_parsing());
+
+			SKIP_SPACING
+
+			varList_node.childs.push_back(VarList_parsing());
+		}
+		else
+		{
+			std::string mes = "Unexpected separator. Expected <,>. " + current_toke->get_lexema() + " " + " met.";
+			output_error(mes);
+		}
+	}
+	return varList_node;
+	*/
+}
 
 
 
@@ -319,36 +359,6 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::End_parsing()
 	return tree_node();
 }
 
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::VarList_parsing()
-{
-	/*
-	tree_node varList_node;
-	varList_node.rule = "VarList:";
-
-	varList_node.childs.push_back(Var_parsig());
-
-	SKIP_SPACING
-
-	if (current_toke->get_type() == Token::divider_)
-	{
-		if (current_toke->get_lexema() == ",") 
-		{
-			varList_node.childs.push_back(Divider_parsing());
-			
-			SKIP_SPACING
-
-			varList_node.childs.push_back(VarList_parsing());
-		}
-		else
-		{
-			std::string mes = "Unexpected separator. Expected <,>. " + current_toke->get_lexema() + " " + " met.";
-			output_error(mes);
-		}
-	}
-	return varList_node;
-	*/
-	return tree_node();
-}
 
 Syntactic_Analyzer::tree_node Syntactic_Analyzer::Var_parsig()
 {

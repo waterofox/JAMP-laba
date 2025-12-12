@@ -1,1 +1,2 @@
 PROGRAM ExampleBigProgram
+INTEGER a

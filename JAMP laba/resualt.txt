@@ -1,7 +1,9 @@
 key word: 
+	307: INTEGER 
 	381: PROGRAM 
 
 identifi: 
+	6: a 
 	91: ExampleBigProgram 
 
 operator: 

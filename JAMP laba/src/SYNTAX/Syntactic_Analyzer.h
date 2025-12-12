@@ -49,7 +49,7 @@ private:
 	//DESCRIPTIONS
 	void Descr_parsing(tree_node* parent_node);
 	void Type_parsing(tree_node* parent_node);
-	tree_node VarList_parsing();
+	void VarList_parsing(tree_node* parent_node);
 	tree_node Var_parsig();
 	void Id_parsing(tree_node* parent_node);
 	

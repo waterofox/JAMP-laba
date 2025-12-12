@@ -2,3 +2,7 @@ LEXEMA: PROGRAM
 
 LEXEMA: ExampleBigProgram
 
+LEXEMA: INTEGER
+
+LEXEMA: a
+
