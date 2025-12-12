@@ -7,12 +7,10 @@
 #define SKIP_SPACE \
 		if (current_toke.get_type() == Token::token_type::divider_)\
 		{ \
-			if(	current_toke.get_lexema() != " ") \
+			if(	current_toke.get_lexema() == " ") \
 			{\
-				std::string mes = "Unexpected divider. <" + current_toke.get_lexema() + "> met."; \
-				output_error(mes);\
+				return;\
 			}\
-			return;\
 		}
 
 void Syntactic_Analyzer::output_error(const std::string& error)
@@ -129,6 +127,11 @@ void Syntactic_Analyzer::Begin_parsing(tree_node* parent_node)
 		comp->current_rule.push(rules::Descriptions);
 		comp->actual_node = syntax_tree;
 	}
+	else
+	{
+		std::string mes = "Unexpected token! Expected identifi of program. <" + current_toke.get_lexema() + "> met.";
+		output_error(mes);
+	}
 
 }
 
@@ -167,31 +170,19 @@ void Syntactic_Analyzer::Descriptions_parsing(tree_node* parent)
 
 void Syntactic_Analyzer::Descr_parsing(tree_node* parent_node)
 {
-	if (comp->expected_token == Token::token_type::key_word)
-	{
-		if (current_toke.get_type() != Token::key_word)
-		{
-			//end of Descriptions
-			comp->current_rule.pop();
 
-		}
+	++parsed_line_counter;
+	tree_node descr_node;
+	descr_node.rule = rules::Descr;
 
-		++parsed_line_counter;
-		tree_node descr_node;
-		descr_node.rule = rules::Descr;
+	parent_node->childs.push_back(descr_node);
+	comp->current_rule.push(Type);
 
-		parent_node->childs.push_back(descr_node);
-		comp->current_rule.push(Type);
+	continue_parsing(current_toke, &parent_node->childs.back());
 
-		continue_parsing(current_toke, &parent_node->childs.back());
-
-		comp->expected_token = Token::token_type::identifi_;
-		comp->current_rule.push(rules::VarList);
-	}
-	else if (comp->expected_token == Token::token_type::identifi_)
-	{
-		
-	}
+	comp->expected_token = Token::token_type::identifi_;
+	comp->current_rule.push(rules::VarList);
+	comp->actual_node = &parent_node->childs.back();
 }
 void Syntactic_Analyzer::Type_parsing(tree_node* parent_node)
 {
@@ -234,6 +225,7 @@ void Syntactic_Analyzer::VarList_parsing(tree_node* parent_node)
 		continue_parsing(current_toke, &parent_node->childs.back());
 
 		comp->expected_token = Token::token_type::divider_;
+		comp->actual_node = &parent_node->childs.back();
 	}
 	else if (comp->expected_token == Token::token_type::divider_)
 	{
@@ -246,7 +238,27 @@ void Syntactic_Analyzer::VarList_parsing(tree_node* parent_node)
 			
 			//potential new descr
 			comp->expected_token = Token::token_type::key_word;
+			comp->actual_node = &syntax_tree->childs[1];
+
+			continue_parsing(current_toke, comp->actual_node);
+
 		}
+		else if (current_toke.get_type() == comp->expected_token and current_toke.get_lexema() == ",")
+		{
+			//continue varlist
+
+			comp->expected_token = Token::token_type::identifi_;
+		}
+		else
+		{
+			std::string mes = "Unexpected token! exprcted varlist ( list of indentifies ) or end of varlist";
+			output_error(mes);
+		}
+	}
+	else 
+	{
+		std::string mes = "Unexpected token! exprcted var ( identifi_ ) or varlist ( list of indentifies )";
+		output_error(mes);
 	}
 
 

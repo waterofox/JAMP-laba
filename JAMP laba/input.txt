@@ -1,2 +1,4 @@
-PROGRAM ExampleBigProgram
-INTEGER a
+PROGRAM Kdfsdf
+ a   , b,sdf    ,sdfsdf
+REAL jopa
+INTEGER key

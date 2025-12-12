@@ -1,10 +1,16 @@
 key word: 
+	201: REAL 
 	307: INTEGER 
 	381: PROGRAM 
 
 identifi: 
 	6: a 
-	91: ExampleBigProgram 
+	7: b 
+	159: sdfsdf 
+	175: jopa 
+	354: sdf 
+	375: Kdfsdf 
+	398: key 
 
 operator: 
 
@@ -12,6 +18,7 @@ constanta:
 
 divider: 
 	453:   
+	465: , 
 
 function: 
 
