@@ -126,6 +126,7 @@ void Syntactic_Analyzer::Begin_parsing(tree_node* parent_node)
 		//start of descriptions
 		comp->current_rule.push(rules::Descriptions);
 		comp->actual_node = syntax_tree;
+		comp->expected_token = Token::token_type::key_word;
 	}
 	else
 	{
@@ -158,6 +159,22 @@ void Syntactic_Analyzer::Id_parsing(tree_node* parent_node)
 
 void Syntactic_Analyzer::Descriptions_parsing(tree_node* parent)
 {
+
+	
+	if(current_toke.get_type() != comp->expected_token )
+	{
+		//end of Descriptions
+		comp->current_rule.pop();
+		comp->actual_node = syntax_tree;
+
+		//begin of Operators
+		comp->current_rule.push(rules::Operators);
+		comp->expected_token = Token::token_type::identifi_;
+
+		continue_parsing(current_toke, syntax_tree);
+		return;
+	}
+
 	tree_node descriptions_node;
 	descriptions_node.rule = rules::Descriptions;
 
@@ -170,6 +187,18 @@ void Syntactic_Analyzer::Descriptions_parsing(tree_node* parent)
 
 void Syntactic_Analyzer::Descr_parsing(tree_node* parent_node)
 {
+
+	if (current_toke.get_type() != comp->expected_token)
+	{
+		//potential end of Descriptions
+		comp->current_rule.pop();
+		comp->expected_token = Token::token_type::key_word;
+		
+		//go to Descriptions
+		continue_parsing(current_toke, parent_node);
+
+		return;
+	}
 
 	++parsed_line_counter;
 	tree_node descr_node;
@@ -260,34 +289,6 @@ void Syntactic_Analyzer::VarList_parsing(tree_node* parent_node)
 		std::string mes = "Unexpected token! exprcted var ( identifi_ ) or varlist ( list of indentifies )";
 		output_error(mes);
 	}
-
-
-	/*
-	tree_node varList_node;
-	varList_node.rule = "VarList:";
-
-	varList_node.childs.push_back(Var_parsig());
-
-	SKIP_SPACING
-
-	if (current_toke->get_type() == Token::divider_)
-	{
-		if (current_toke->get_lexema() == ",")
-		{
-			varList_node.childs.push_back(Divider_parsing());
-
-			SKIP_SPACING
-
-			varList_node.childs.push_back(VarList_parsing());
-		}
-		else
-		{
-			std::string mes = "Unexpected separator. Expected <,>. " + current_toke->get_lexema() + " " + " met.";
-			output_error(mes);
-		}
-	}
-	return varList_node;
-	*/
 }
 
 

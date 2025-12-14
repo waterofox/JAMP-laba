@@ -1,4 +1,6 @@
 PROGRAM Kdfsdf
- a   , b,sdf    ,sdfsdf
+REAL a   , b,sdf    ,sdfsdf
 REAL jopa
 INTEGER key
+
+jopa = 123
