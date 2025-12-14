@@ -42,16 +42,16 @@ void Syntactic_Analyzer::continue_parsing(const Token& token_to_parse, tree_node
 	case Begin:   { Begin_parsing(parent_node); }break;
 	case End: { End_parsing(); } break;
 	case Descriptions: { Descriptions_parsing(parent_node); } break;
-	case Operators: { Operators_parsing(); } break;
+	case Operators: { Operators_parsing(parent_node); } break;
 	case Descr: { Descr_parsing(parent_node); } break;
 	case Type: { Type_parsing(parent_node); } break;
 	case VarList: { VarList_parsing(parent_node); } break;
-	case Op: { Op_parsing(); } break;
+	case Op: { Op_parsing(parent_node); } break;
 	case Expr: { Expr_parsing(); } break;
 	case Id: { Id_parsing(parent_node); } break;
 	case Const: { Const_parsing(); } break;
 	case Divider: { Divider_parsing(); } break;
-	case Operator: { Operator_parsing(); } break;
+	case Operator: { Operator_parsing(parent_node); } break;
 	default:
 		break;
 	}
@@ -171,7 +171,7 @@ void Syntactic_Analyzer::Descriptions_parsing(tree_node* parent)
 		comp->current_rule.push(rules::Operators);
 		comp->expected_token = Token::token_type::identifi_;
 
-		continue_parsing(current_toke, syntax_tree);
+		continue_parsing(current_toke, comp->actual_node);
 		return;
 	}
 
@@ -293,20 +293,91 @@ void Syntactic_Analyzer::VarList_parsing(tree_node* parent_node)
 
 
 
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::Operators_parsing()
+void Syntactic_Analyzer::Operators_parsing(tree_node* parent)
 {
-	/*
-	tree_node operators_node;
-	operators_node.rule = "Operators:";
-
-	while (current_toke->get_type() == Token::identifi_)
+	if (current_toke.get_type() != comp->expected_token)
 	{
-		operators_node.childs.push_back(Op_parsing());
+		//end of Operators
+		comp->current_rule.pop();
+		comp->actual_node = syntax_tree;
+
+		//begin of End
+		comp->current_rule.push(rules::End);
+		comp->expected_token = Token::token_type::key_word;
+
+		continue_parsing(current_toke, syntax_tree);
+		return;
 	}
 
-	return operators_node;
-	*/
-	return tree_node();
+	tree_node operators_node;
+	operators_node.rule = rules::Operators;
+
+	parent->childs.push_back(operators_node);
+
+	comp->expected_token = Token::token_type::identifi_;
+	comp->current_rule.push(rules::Op);
+	continue_parsing(current_toke, &parent->childs.back());
+}
+
+void Syntactic_Analyzer::Op_parsing(tree_node* parent_node)
+{
+	SKIP_SPACE
+
+	if (current_toke.get_type() != comp->expected_token)
+	{
+		//potential end of Operators
+		comp->current_rule.pop();
+		comp->expected_token = Token::token_type::identifi_;
+
+		//go to Operatos
+		continue_parsing(current_toke, parent_node);
+
+		return;
+	}
+
+	if (comp->expected_token == Token::token_type::identifi_)
+	{
+		++parsed_line_counter;
+		tree_node op_node;
+		op_node.rule = rules::Op;
+
+		parent_node->childs.push_back(op_node);
+		comp->current_rule.push(rules::Id);
+
+		continue_parsing(current_toke, &parent_node->childs.back());
+
+		comp->expected_token = Token::token_type::opErator; //=
+		comp->actual_node = &parent_node->childs.back();
+	}
+	else if (comp->expected_token == Token::token_type::opErator)
+	{
+		if (current_toke.get_lexema() == "=")
+		{
+			comp->current_rule.push(rules::Operator);
+			continue_parsing(current_toke, parent_node);
+
+			//expr begin
+			comp->current_rule.push(rules::Expr);
+			//cant know expected token
+		}
+	}
+}
+
+void Syntactic_Analyzer::Operator_parsing(tree_node* parent_node)
+{
+
+	tree_node operator_node;
+	operator_node.rule = rules::Operator;
+	if (current_toke.get_type() != Token::opErator)
+	{
+		std::string mes = "Expected operator. " + current_toke.get_lexema() + " " + " met.";
+		output_error(mes);
+	}
+	operator_node.data = current_toke.get_lexema();
+
+
+	parent_node->childs.push_back(operator_node);
+	comp->current_rule.pop();
 }
 
 Syntactic_Analyzer::tree_node Syntactic_Analyzer::End_parsing()
@@ -385,64 +456,6 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::Var_parsig()
 	return tree_node();
 }
 
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::Op_parsing()
-{
-/*
-	++parsed_line_counter;
-	tree_node op_node;
-	op_node.rule = "Op:";
-	op_node.childs.push_back(Id_parsing());
-
-	SKIP_SPACING
-
-	if (current_toke->get_type() == Token::divider_)
-	{
-		std::string mes = "Unexpected separator between the operator and the operand. Expected < >. " + current_toke->get_lexema() + " " + " met.";
-		output_error(mes);
-	}
-	if (current_toke->get_type() == Token::opErator)
-	{
-		if (current_toke->get_lexema() == "=") { op_node.childs.push_back(Operator_parsing()); }
-		else
-		{
-			std::string mes = "Expected <=>. " + current_toke->get_lexema() + " " + " met.";
-			output_error(mes);
-		}
-	}
-	else
-	{
-		std::string mes = "Expected Operator. " + current_toke->get_lexema() + " " + " met.";
-		output_error(mes);
-	}
-
-	SKIP_SPACING
-
-	op_node.childs.push_back(Expr_parsing());
-
-	return op_node;
-	*/
-	return tree_node();
-}
-
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::Operator_parsing()
-{
-	/*
-	tree_node operator_node;
-	operator_node.rule = "Operator:";
-	if (current_toke->get_type() != Token::opErator)
-	{
-		std::string mes = "Expected operator. "  + current_toke->get_lexema() + " " + " met.";
-		output_error(mes);
-	}
-	operator_node.data = current_toke->get_lexema();
-	
-	++current_toke;
-
-
-	return operator_node;
-	*/
-	return tree_node();
-}
 
 Syntactic_Analyzer::tree_node Syntactic_Analyzer::Const_parsing()
 {

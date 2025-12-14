@@ -43,7 +43,7 @@ private:
 	//MAIN PARSERS
 	void Begin_parsing(tree_node* parent_node);
 	void Descriptions_parsing(tree_node* parent);
-	tree_node Operators_parsing();
+	void Operators_parsing(tree_node* parent);
 	tree_node End_parsing();
 
 	//DESCRIPTIONS
@@ -54,8 +54,8 @@ private:
 	void Id_parsing(tree_node* parent_node);
 	
 	//OPERATIONS
-	tree_node Op_parsing();
-	tree_node Operator_parsing();
+	void Op_parsing(tree_node* parent_node);
+	void Operator_parsing(tree_node* parent_node);
 	tree_node Expr_parsing();
 	tree_node Const_parsing();
 	tree_node Function_parsing();
