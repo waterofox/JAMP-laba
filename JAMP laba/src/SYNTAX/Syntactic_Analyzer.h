@@ -56,8 +56,8 @@ private:
 	//OPERATIONS
 	void Op_parsing(tree_node* parent_node);
 	void Operator_parsing(tree_node* parent_node);
-	tree_node Expr_parsing();
-	tree_node Const_parsing();
+	void Expr_parsing(tree_node* paretn_node);
+	void Const_parsing(tree_node* parent_node);
 	tree_node Function_parsing();
 
 	//NE PRIDUMAL CATEGORIY

@@ -47,9 +47,9 @@ void Syntactic_Analyzer::continue_parsing(const Token& token_to_parse, tree_node
 	case Type: { Type_parsing(parent_node); } break;
 	case VarList: { VarList_parsing(parent_node); } break;
 	case Op: { Op_parsing(parent_node); } break;
-	case Expr: { Expr_parsing(); } break;
+	case Expr: { Expr_parsing(parent_node); } break;
 	case Id: { Id_parsing(parent_node); } break;
-	case Const: { Const_parsing(); } break;
+	case Const: { Const_parsing(parent_node); } break;
 	case Divider: { Divider_parsing(); } break;
 	case Operator: { Operator_parsing(parent_node); } break;
 	default:
@@ -358,7 +358,7 @@ void Syntactic_Analyzer::Op_parsing(tree_node* parent_node)
 
 			//expr begin
 			comp->current_rule.push(rules::Expr);
-			//cant know expected token
+			comp->expected_token = Token::token_type::not_type;
 		}
 		else
 		{
@@ -387,6 +387,94 @@ void Syntactic_Analyzer::Operator_parsing(tree_node* parent_node)
 
 
 	parent_node->childs.push_back(operator_node);
+	comp->current_rule.pop();
+}
+
+void Syntactic_Analyzer::Expr_parsing(tree_node* parent_node)
+{
+	//i cant know expexted token. So.. Expr parser makes the decision
+	SKIP_SPACE
+
+		if (comp->expected_token == Token::opErator)
+		{
+			if (current_toke.get_type() == Token::token_type::opErator)
+			{
+				if (current_toke.get_lexema() == "+" or current_toke.get_lexema() == "-")
+				{
+					comp->expected_token = Token::token_type::opErator;
+					comp->current_rule.push(Operator);
+					continue_parsing(current_toke, parent_node);
+
+					//continue Expr
+					comp->expected_token = Token::not_type;
+					return;
+				}
+				else
+				{
+					std::string mes = "Unexpected operator. Expect + or -. < " + current_toke.get_lexema() + "> met.";
+					output_error(mes);
+				}
+			}
+			else
+			{
+				//end of op str
+				comp->actual_node = &syntax_tree->childs[2]; //operators
+				comp->current_rule.pop();
+
+				comp->expected_token = Token::token_type::identifi_;
+				comp->current_rule.push(Op);
+				continue_parsing(current_toke, comp->actual_node);
+				return;
+			}
+		}
+
+	tree_node expr_node;
+	expr_node.rule = rules::Expr;
+	parent_node->childs.push_back(expr_node);
+
+	switch (current_toke.get_type())
+	{
+	case Token::token_type::identifi_: 
+	{
+		comp->expected_token = Token::token_type::identifi_;
+		comp->current_rule.push(rules::Id);
+		continue_parsing(current_toke, &parent_node->childs.back());
+
+	} break;
+	case Token::token_type::constant:
+	{
+		comp->expected_token = Token::token_type::constant;
+		comp->current_rule.push(rules::Const);
+		continue_parsing(current_toke, &parent_node->childs.back());
+
+	}break;
+		default: {
+			std::string mes = "Invalid Expr met.";
+			output_error(mes);
+		}
+		break;
+	}
+
+	//potential continue expr
+	comp->expected_token = Token::token_type::opErator;
+	comp->actual_node = &parent_node->childs.back();
+}
+
+void Syntactic_Analyzer::Const_parsing(tree_node* parent_node)
+{
+	
+	tree_node const_node;
+	const_node.rule = rules::Const;
+
+	if (current_toke.get_type() != Token::constant)
+	{
+		std::string mes = "Expected const. "  + current_toke.get_lexema() + " " + " met.";
+		output_error(mes);
+	}
+
+	const_node.data = current_toke.get_lexema();
+
+	parent_node->childs.push_back(const_node);
 	comp->current_rule.pop();
 }
 
@@ -466,27 +554,6 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::Var_parsig()
 	return tree_node();
 }
 
-
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::Const_parsing()
-{
-	/*
-	tree_node const_node;
-	const_node.rule = "Const:";
-
-	if (current_toke->get_type() != Token::constant)
-	{
-		std::string mes = "Expected const. "  + current_toke->get_lexema() + " " + " met.";
-		output_error(mes);
-	}
-
-	const_node.data = current_toke->get_lexema();
-
-	++current_toke;
-
-	return const_node;
-	*/
-	return tree_node();
-}
 Syntactic_Analyzer::tree_node Syntactic_Analyzer::Function_parsing()
 {
 	/*
@@ -504,137 +571,6 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::Function_parsing()
 
 
 	return function_node;
-	*/
-	return tree_node();
-}
-
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::Expr_parsing()
-{
-	/*
-	tree_node expr_node;
-	expr_node.rule = "Expr:";
-
-	switch (current_toke->get_type())
-	{
-	case Token::identifi_: {
-		expr_node.childs.push_back(Id_parsing());
-
-		SKIP_SPACING
-
-			CONTINUE_EXPR
-
-		return expr_node;
-	
-	} break;
-
-
-
-	case Token::constant: {
-		expr_node.childs.push_back(Const_parsing());
-
-		SKIP_SPACING
-
-			CONTINUE_EXPR
-
-		return expr_node;
-	}break;
-	case Token::divider_: {
-		expr_node.rule = "( Expr ):";
-
-		if (current_toke->get_lexema() != "(")
-		{
-			std::string mes = "Unexpected separator. Expected <(>. " + current_toke->get_lexema() + " " + " met.";
-			output_error(mes);
-		}
-		else
-		{
-			expr_node.childs.push_back(Divider_parsing());
-
-			SKIP_SPACING
-
-				expr_node.childs.push_back(Expr_parsing());
-
-			SKIP_SPACING
-
-				if (current_toke->get_lexema() != ")")
-				{
-					std::string mes = "Unexpected separator. Expected <)>. " + current_toke->get_lexema() + " " + " met.";
-					output_error(mes);
-				}
-				else
-				{
-					expr_node.childs.push_back(Divider_parsing());
-				}
-
-			SKIP_SPACING
-
-				CONTINUE_EXPR
-		}
-
-
-
-		return expr_node;
-	}break;
-	case Token::function: {
-		expr_node.rule = "Function( Expr ):";
-		expr_node.childs.push_back(Function_parsing());
-		
-		if (current_toke->get_type() != Token::divider_)
-		{
-			std::string mes = "Expected separator after function call. " + current_toke->get_lexema() + " " + " met.";
-			output_error(mes);
-		}
-		else
-		{
-			if (current_toke->get_lexema() != "(")
-			{
-				std::string mes = "Expected separator <(> after function call. " + current_toke->get_lexema() + " " + " met.";
-				output_error(mes);
-			}
-			else
-			{
-				expr_node.childs.push_back(Divider_parsing());
-				
-				SKIP_SPACING
-					expr_node.childs.push_back(Expr_parsing());
-				SKIP_SPACING
-
-					if (current_toke->get_type() != Token::divider_)
-					{
-						std::string mes = "Expected ender-separator after function call. " + current_toke->get_lexema() + " " + " met.";
-						output_error(mes);
-					}
-					else
-					{
-							if (current_toke->get_lexema() != ")")
-							{
-								std::string mes = "Expected ender-separator <)> after function call. " + current_toke->get_lexema() + " " + " met.";
-								output_error(mes);
-							}
-							else
-							{
-								expr_node.childs.push_back(Divider_parsing());
-							}
-					}
-				SKIP_SPACING
-
-					CONTINUE_EXPR
-
-			}
-		}
-		
-
-
-
-
-		return expr_node;
-	}break;
-	default: 
-	{
-		output_error("Unexpected Expr");
-		return expr_node;
-	} break;
-	}
 	*/
 	return tree_node();
 }

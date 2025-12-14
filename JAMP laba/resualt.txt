@@ -13,9 +13,12 @@ identifi:
 	398: key 
 
 operator: 
+	464: + 
+	466: - 
 	482: = 
 
 constanta: 
+	200: 12 
 
 divider: 
 	453:   
