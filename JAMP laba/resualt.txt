@@ -14,18 +14,14 @@ identifi:
 
 operator: 
 	464: + 
-	466: - 
 	482: = 
 
 constanta: 
 	200: 12 
-	470: 1 
-	475: 6 
 
 divider: 
 	453:   
 	461: ( 
-	462: ) 
 	465: , 
 
 function: 

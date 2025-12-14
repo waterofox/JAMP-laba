@@ -434,15 +434,29 @@ void Syntactic_Analyzer::Expr_parsing(tree_node* parent_node)
 						continue_parsing(current_toke, comp->actual_node);
 						return;
 					}
+					else
+					{
+						std::string mes = "Unexpected divider. Expect ')' after '('  .< " + current_toke.get_lexema() + "> met.";
+						output_error(mes);
+						return;
+					}
 				}
-				//end of op str
-				comp->actual_node = &syntax_tree->childs[2]; //operators
-				comp->current_rule.pop();
+				if (parenthesis.empty()) 
+				{
+					//end of op str
+					comp->actual_node = &syntax_tree->childs[2]; //operators
+					comp->current_rule.pop();
 
-				comp->expected_token = Token::token_type::identifi_;
-				comp->current_rule.push(Op);
-				continue_parsing(current_toke, comp->actual_node);
-				return;
+					comp->expected_token = Token::token_type::identifi_;
+					comp->current_rule.push(Op);
+					continue_parsing(current_toke, comp->actual_node);
+					return;
+				}
+				else
+				{
+					std::string mes = "Expect ')' after '('. Nothing met.";
+					output_error(mes);
+				}
 			}
 		}
 
@@ -490,16 +504,36 @@ void Syntactic_Analyzer::Expr_parsing(tree_node* parent_node)
 		else if(current_toke.get_lexema() == ")")
 		{
 			//end of ( Expr )
-			if (parenthesis.top()->childs.front().data == "(")
+			if (!parenthesis.empty())
 			{
-				comp->current_rule.push(rules::Divider);
-				continue_parsing(current_toke, parenthesis.top());
+				if (parenthesis.top()->childs.front().data == "(")
+				{
+					comp->current_rule.push(rules::Divider);
+					continue_parsing(current_toke, parenthesis.top());
 
-				//special continue EXPR
-				comp->actual_node = parenthesis.top();
-				parenthesis.pop();
-				comp->expected_token = Token::token_type::opErator;
+					//special continue EXPR
+					comp->actual_node = parenthesis.top();
+					parenthesis.pop();
+					comp->expected_token = Token::token_type::opErator;
+
+
+				}
+				else
+				{
+					std::string mes = "Unexpected divider. Expect '(' before ')'  .< " + current_toke.get_lexema() + "> met.";
+					output_error(mes);
+				}
 			}
+			else
+			{
+				std::string mes = "Expect '(' before ')' nothing met.";
+				output_error(mes);
+			}
+		}
+		else
+		{
+			std::string mes = "Unexpected Expr. Expect begin of '( Expr )' or end of '( Expr )'. < " + current_toke.get_lexema() + "> met.";
+			output_error(mes);
 		}
 
 	} break;

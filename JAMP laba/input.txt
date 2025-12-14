@@ -2,6 +2,5 @@ PROGRAM Kdfsdf
 REAL a   , b,sdf    ,sdfsdf
 REAL jopa
 INTEGER key
-jopa = key + jopa - a + b  
-key = a + b
-a = (((b + 1) + jopa) - (12 + ( (a + 6) - 12))) + (12 - b)
+a = (a + 12
+b = 12
