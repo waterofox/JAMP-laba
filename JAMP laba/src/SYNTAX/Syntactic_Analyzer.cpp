@@ -12,6 +12,14 @@
 				return;\
 			}\
 		}
+#define CONTINUE_EXPR \
+	comp->expected_token = Token::token_type::opErator; \
+	comp->actual_node = &parent_node->childs.back();
+
+#define INIT_EXPR_NODE \
+	tree_node expr_node;\
+	expr_node.rule = rules::Expr;\
+	parent_node->childs.push_back(expr_node);
 
 void Syntactic_Analyzer::output_error(const std::string& error)
 {
@@ -50,7 +58,7 @@ void Syntactic_Analyzer::continue_parsing(const Token& token_to_parse, tree_node
 	case Expr: { Expr_parsing(parent_node); } break;
 	case Id: { Id_parsing(parent_node); } break;
 	case Const: { Const_parsing(parent_node); } break;
-	case Divider: { Divider_parsing(); } break;
+	case Divider: { Divider_parsing(parent_node); } break;
 	case Operator: { Operator_parsing(parent_node); } break;
 	default:
 		break;
@@ -417,6 +425,16 @@ void Syntactic_Analyzer::Expr_parsing(tree_node* parent_node)
 			}
 			else
 			{
+				if (current_toke.get_type() == Token::token_type::divider_)
+				{
+					if (current_toke.get_lexema() == ")")
+					{
+						comp->expected_token = Token::token_type::divider_;
+						comp->actual_node = &syntax_tree->childs.back().childs.back();
+						continue_parsing(current_toke, comp->actual_node);
+						return;
+					}
+				}
 				//end of op str
 				comp->actual_node = &syntax_tree->childs[2]; //operators
 				comp->current_rule.pop();
@@ -428,26 +446,63 @@ void Syntactic_Analyzer::Expr_parsing(tree_node* parent_node)
 			}
 		}
 
-	tree_node expr_node;
-	expr_node.rule = rules::Expr;
-	parent_node->childs.push_back(expr_node);
-
 	switch (current_toke.get_type())
 	{
 	case Token::token_type::identifi_: 
 	{
+		INIT_EXPR_NODE
+
 		comp->expected_token = Token::token_type::identifi_;
 		comp->current_rule.push(rules::Id);
 		continue_parsing(current_toke, &parent_node->childs.back());
 
+		CONTINUE_EXPR
+
 	} break;
 	case Token::token_type::constant:
 	{
+		INIT_EXPR_NODE
+
 		comp->expected_token = Token::token_type::constant;
 		comp->current_rule.push(rules::Const);
 		continue_parsing(current_toke, &parent_node->childs.back());
 
+		CONTINUE_EXPR
+
 	}break;
+	case Token::divider_: // ( Expr ) 
+	{
+		comp->expected_token = Token::token_type::divider_;
+		if (current_toke.get_lexema() == "(")
+		{
+			INIT_EXPR_NODE
+
+			//begin of ( Expr )
+			comp->current_rule.push(rules::Divider);
+			parenthesis.push(&parent_node->childs.back());
+			continue_parsing(current_toke, &parent_node->childs.back());
+
+
+			//now expect Expr
+			comp->expected_token = Token::token_type::not_type;
+			comp->actual_node = &parent_node->childs.back();
+		}
+		else if(current_toke.get_lexema() == ")")
+		{
+			//end of ( Expr )
+			if (parenthesis.top()->childs.front().data == "(")
+			{
+				comp->current_rule.push(rules::Divider);
+				continue_parsing(current_toke, parenthesis.top());
+
+				//special continue EXPR
+				comp->actual_node = parenthesis.top();
+				parenthesis.pop();
+				comp->expected_token = Token::token_type::opErator;
+			}
+		}
+
+	} break;
 		default: {
 			std::string mes = "Invalid Expr met.";
 			output_error(mes);
@@ -455,9 +510,6 @@ void Syntactic_Analyzer::Expr_parsing(tree_node* parent_node)
 		break;
 	}
 
-	//potential continue expr
-	comp->expected_token = Token::token_type::opErator;
-	comp->actual_node = &parent_node->childs.back();
 }
 
 void Syntactic_Analyzer::Const_parsing(tree_node* parent_node)
@@ -477,6 +529,24 @@ void Syntactic_Analyzer::Const_parsing(tree_node* parent_node)
 	parent_node->childs.push_back(const_node);
 	comp->current_rule.pop();
 }
+void Syntactic_Analyzer::Divider_parsing(tree_node* parent_node)
+{
+	
+	tree_node divider_node;
+	divider_node.rule = rules::Divider;
+
+	if (current_toke.get_type() != Token::divider_)
+	{
+		std::string mes = "Expected separator. "  + current_toke.get_lexema() + " " + " met.";
+		output_error(mes);
+	}
+
+	divider_node.data = current_toke.get_lexema();
+	
+	parent_node->childs.push_back(divider_node);
+	comp->current_rule.pop();
+}
+
 
 Syntactic_Analyzer::tree_node Syntactic_Analyzer::End_parsing()
 {
@@ -571,27 +641,6 @@ Syntactic_Analyzer::tree_node Syntactic_Analyzer::Function_parsing()
 
 
 	return function_node;
-	*/
-	return tree_node();
-}
-
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::Divider_parsing()
-{
-	/*
-	tree_node divider_node;
-	divider_node.rule = "Divider:";
-
-	if (current_toke->get_type() != Token::divider_)
-	{
-		std::string mes = "Expected separator. "  + current_toke->get_lexema() + " " + " met.";
-		output_error(mes);
-	}
-
-	divider_node.data = current_toke->get_lexema();
-	++current_toke;
-	
-
-	return divider_node;
 	*/
 	return tree_node();
 }

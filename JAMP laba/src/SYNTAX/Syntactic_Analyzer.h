@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <stack>
 #include "../LEXICA/staff/Token.h"
 
 class Compiler;
@@ -26,6 +27,7 @@ private:
 	void output_error(const std::string& error);
 
 	Compiler* comp = nullptr;
+	std::stack<tree_node*> parenthesis;
 public:
 	tree_node* syntax_tree = nullptr;
 	
@@ -61,7 +63,7 @@ private:
 	tree_node Function_parsing();
 
 	//NE PRIDUMAL CATEGORIY
-	tree_node Divider_parsing();
+	void Divider_parsing(tree_node* parent_node);
 
 
 };

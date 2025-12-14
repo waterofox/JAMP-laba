@@ -4,4 +4,4 @@ REAL jopa
 INTEGER key
 jopa = key + jopa - a + b  
 key = a + b
-a = b - a + 12
+a = (((b + 1) + jopa) - (12 + ( (a + 6) - 12))) + (12 - b)
