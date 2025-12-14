@@ -602,17 +602,49 @@ void Syntactic_Analyzer::tree_node::show_tree(int deep)
 	{
 		if (i == 0)
 		{
-			std::cout << '|';
+			std::cout << ' ';
 			continue;
 		}
 		if (i == 1) 
 		{
-			std::cout << "---";
+			std::cout << "   ";
 			continue;
 		}
-		std::cout << "----";
+		std::cout << "   |";
 	}
-	std::cout << rule;
+	switch (rule)
+	{
+	case Program: std::cout << "Program: ";
+		break;
+	case Begin: std::cout << "Begin: ";
+		break;
+	case End: std::cout << "End: ";
+		break;
+	case Descriptions: std::cout << "Descriptions: ";
+		break;
+	case Operators: std::cout << "Operators: ";
+		break;
+	case Descr: std::cout << "Descr: ";
+		break;
+	case Type: std::cout << "Type: ";
+		break;
+	case VarList: std::cout << "VarList: ";
+		break;
+	case Op: std::cout << "Op: ";
+		break;
+	case Expr: std::cout << "Expr: ";
+		break;
+	case Id: std::cout << "Id: ";
+		break;
+	case Const: std::cout << "Const: ";
+		break;
+	case Divider: std::cout << "Divider: ";
+		break;
+	case Operator: std::cout << "Operator: ";
+		break;
+	default:
+		break;
+	}
 
 	HANDLE h;
 	h = GetStdHandle(STD_OUTPUT_HANDLE);
