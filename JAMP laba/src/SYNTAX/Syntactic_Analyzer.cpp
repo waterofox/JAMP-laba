@@ -360,6 +360,16 @@ void Syntactic_Analyzer::Op_parsing(tree_node* parent_node)
 			comp->current_rule.push(rules::Expr);
 			//cant know expected token
 		}
+		else
+		{
+			std::string mes = "Unexpected operator! expected operator < = >";
+			output_error(mes);
+		}
+	}
+	else
+	{
+		std::string mes = "Unexpected token! expected identifi or operator < = >";
+		output_error(mes);
 	}
 }
 

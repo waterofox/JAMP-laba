@@ -3,4 +3,4 @@ REAL a   , b,sdf    ,sdfsdf
 REAL jopa
 INTEGER key
 
-jopa = 
+jopa     = 
