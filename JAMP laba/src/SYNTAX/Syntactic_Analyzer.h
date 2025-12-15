@@ -46,13 +46,12 @@ private:
 	void Begin_parsing(tree_node* parent_node);
 	void Descriptions_parsing(tree_node* parent);
 	void Operators_parsing(tree_node* parent);
-	tree_node End_parsing();
+	void End_parsing(tree_node* parent);
 
 	//DESCRIPTIONS
 	void Descr_parsing(tree_node* parent_node);
 	void Type_parsing(tree_node* parent_node);
 	void VarList_parsing(tree_node* parent_node);
-	tree_node Var_parsig();
 	void Id_parsing(tree_node* parent_node);
 	
 	//OPERATIONS
@@ -60,7 +59,7 @@ private:
 	void Operator_parsing(tree_node* parent_node);
 	void Expr_parsing(tree_node* paretn_node);
 	void Const_parsing(tree_node* parent_node);
-	tree_node Function_parsing();
+	void Function_parsing(tree_node* parent_node);
 
 	//NE PRIDUMAL CATEGORIY
 	void Divider_parsing(tree_node* parent_node);

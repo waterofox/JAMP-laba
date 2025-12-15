@@ -12,6 +12,12 @@ void Compiler::compile_file(const std::string& file_path)
 	current_rule.push(rules::Program);
 	lexica->scan_code(tokens_table,file_path);
 
+	if (syntax->syntax_tree->childs.back().rule != rules::End)
+	{
+		std::string mes = "END had missed.";
+		syntax->output_error(mes);
+	}
+
 	syntax->syntax_tree->show_tree(0);
 }
 

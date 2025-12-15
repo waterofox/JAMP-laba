@@ -48,7 +48,7 @@ void Syntactic_Analyzer::continue_parsing(const Token& token_to_parse, tree_node
 	{
 	case Program: { Program_parsing(); } break;
 	case Begin:   { Begin_parsing(parent_node); }break;
-	case End: { End_parsing(); } break;
+	case End: { End_parsing(parent_node); } break;
 	case Descriptions: { Descriptions_parsing(parent_node); } break;
 	case Operators: { Operators_parsing(parent_node); } break;
 	case Descr: { Descr_parsing(parent_node); } break;
@@ -60,6 +60,7 @@ void Syntactic_Analyzer::continue_parsing(const Token& token_to_parse, tree_node
 	case Const: { Const_parsing(parent_node); } break;
 	case Divider: { Divider_parsing(parent_node); } break;
 	case Operator: { Operator_parsing(parent_node); } break;
+	case Function: { Function_parsing(parent_node); break; }
 	default:
 		break;
 	}
@@ -313,7 +314,7 @@ void Syntactic_Analyzer::Operators_parsing(tree_node* parent)
 		comp->current_rule.push(rules::End);
 		comp->expected_token = Token::token_type::key_word;
 
-		continue_parsing(current_toke, syntax_tree);
+		continue_parsing(current_toke, comp->actual_node);
 		return;
 	}
 
@@ -325,6 +326,56 @@ void Syntactic_Analyzer::Operators_parsing(tree_node* parent)
 	comp->expected_token = Token::token_type::identifi_;
 	comp->current_rule.push(rules::Op);
 	continue_parsing(current_toke, &parent->childs.back());
+}
+
+void Syntactic_Analyzer::End_parsing(tree_node* parent_node)
+{
+
+	if (comp->expected_token == Token::token_type::key_word)
+	{
+		++parsed_line_counter;
+		tree_node begin_node;
+		begin_node.rule = rules::End;
+
+		if (current_toke.get_type() != Token::key_word)
+		{
+			std::string mes = "Expected keyword. " + current_toke.get_lexema() + " met.";
+			output_error(mes);
+		}
+		if (current_toke.get_lexema() != "END")
+		{
+			std::string mes = "Expected keyword <END>. " + current_toke.get_lexema() + " met.";
+			output_error(mes);
+		}
+		begin_node.data = current_toke.get_lexema();
+
+		parent_node->childs.push_back(begin_node);
+
+
+		comp->expected_token = Token::token_type::identifi_;
+
+		comp->actual_node = &(parent_node->childs.back());
+	}
+	else if (comp->expected_token == Token::token_type::identifi_)
+	{
+
+		SKIP_SPACE
+
+			comp->current_rule.push(rules::Id);
+		continue_parsing(current_toke, parent_node);
+
+		//end of begin parsing
+		comp->current_rule.pop();
+
+		//end of program
+		comp->current_rule.pop();
+		comp->actual_node = syntax_tree;
+	}
+	else
+	{
+		std::string mes = "Unexpected token! Expected identifi of program. <" + current_toke.get_lexema() + "> met.";
+		output_error(mes);
+	}
 }
 
 void Syntactic_Analyzer::Op_parsing(tree_node* parent_node)
@@ -359,18 +410,26 @@ void Syntactic_Analyzer::Op_parsing(tree_node* parent_node)
 	}
 	else if (comp->expected_token == Token::token_type::opErator)
 	{
-		if (current_toke.get_lexema() == "=")
+		if (current_toke.get_type() == Token::token_type::opErator)
 		{
-			comp->current_rule.push(rules::Operator);
-			continue_parsing(current_toke, parent_node);
+			if (current_toke.get_lexema() == "=")
+			{
+				comp->current_rule.push(rules::Operator);
+				continue_parsing(current_toke, parent_node);
 
-			//expr begin
-			comp->current_rule.push(rules::Expr);
-			comp->expected_token = Token::token_type::not_type;
+				//expr begin
+				comp->current_rule.push(rules::Expr);
+				comp->expected_token = Token::token_type::not_type;
+			}
+			else
+			{
+				std::string mes = "Unexpected operator! expected operator < = >";
+				output_error(mes);
+			}
 		}
 		else
 		{
-			std::string mes = "Unexpected operator! expected operator < = >";
+			std::string mes = "Unexpected token! expected operator < = >";
 			output_error(mes);
 		}
 	}
@@ -436,7 +495,7 @@ void Syntactic_Analyzer::Expr_parsing(tree_node* parent_node)
 					}
 					else
 					{
-						std::string mes = "Unexpected divider. Expect ')' after '('  .< " + current_toke.get_lexema() + "> met.";
+						std::string mes = "Unexpected divider. Expect ')' after '('  .< " + current_toke.get_lexema() + " > met.";
 						output_error(mes);
 						return;
 					}
@@ -448,7 +507,6 @@ void Syntactic_Analyzer::Expr_parsing(tree_node* parent_node)
 					comp->current_rule.pop();
 
 					comp->expected_token = Token::token_type::identifi_;
-					comp->current_rule.push(Op);
 					continue_parsing(current_toke, comp->actual_node);
 					return;
 				}
@@ -535,6 +593,31 @@ void Syntactic_Analyzer::Expr_parsing(tree_node* parent_node)
 			std::string mes = "Unexpected Expr. Expect begin of '( Expr )' or end of '( Expr )'. < " + current_toke.get_lexema() + "> met.";
 			output_error(mes);
 		}
+	} break;
+	case Token::token_type::function: 
+	{
+
+		if (comp->expected_token != Token::token_type::divider_)
+		{
+			INIT_EXPR_NODE
+
+			comp->expected_token = Token::token_type::function;
+			comp->current_rule.push(rules::Function);
+			continue_parsing(current_toke, &parent_node->childs.back());
+
+			comp->expected_token = Token::token_type::divider_;
+			comp->actual_node = &parent_node->childs.back();
+		}
+		else
+		{
+			//trying pars ( EXPR ) after function
+			if (current_toke.get_type() == Token::token_type::divider_)
+			{
+				comp->expected_token = Token::token_type::divider_;
+				continue_parsing(current_toke, &parent_node->childs.back());
+			}
+		}
+
 
 	} break;
 		default: {
@@ -581,102 +664,21 @@ void Syntactic_Analyzer::Divider_parsing(tree_node* parent_node)
 	comp->current_rule.pop();
 }
 
-
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::End_parsing()
+void Syntactic_Analyzer::Function_parsing(tree_node* parent_node)
 {
-	/*
-	if (current_toke == (&((*token_stream).front()) + token_stream->size())) 
-	{
-		std::string mes = "Expected <END>. Nothing met.";
-		output_error(mes);
-		return tree_node(); 
-	}
 
-	++parsed_line_counter;
-	tree_node begin_node;
-	begin_node.rule = "End:";
-
-	if (current_toke->get_type() != Token::key_word)
-	{
-		std::string mes = "Expected keyword. "  + current_toke->get_lexema() + " " + " met.";
-		output_error(mes);
-	}
-
-	if (current_toke->get_lexema() != "END")
-	{
-		std::string mes = "Expected <END>. "  + current_toke->get_lexema() + " " + " met.";
-		output_error(mes);
-	}
-	//matched token
-	begin_node.data = "END";
-	++current_toke;
-	
-	if (current_toke == (&((*token_stream).front()) + token_stream->size()))
-	{
-		std::string mes = "Expected < >. Nothing met.";
-		output_error(mes);
-		return tree_node();
-	}
-
-
-
-	while (current_toke->get_type() == Token::divider_)
-	{
-		if (current_toke->get_lexema() != " ")
-		{
-			std::string mes = "Unexpected separator. Expected < >. "  + current_toke->get_lexema() + " " + " met.";
-			output_error(mes);
-		}
-		++current_toke;
-		if (current_toke == (&((*token_stream).front()) + token_stream->size()))
-		{
-			std::string mes = "Expected ID. Nothing met.";
-			output_error(mes);
-			return tree_node();
-		}
-
-		
-	}
-
-	begin_node.childs.push_back(Id_parsing());
-
-	return begin_node;
-	*/
-	return tree_node();
-}
-
-
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::Var_parsig()
-{
-	/*
-	tree_node var_node;
-	var_node.rule = "Var:";
-	var_node.childs.push_back(Id_parsing());
-
-	return var_node;
-	*/
-	return tree_node();
-}
-
-Syntactic_Analyzer::tree_node Syntactic_Analyzer::Function_parsing()
-{
-	/*
 	tree_node function_node;
-	function_node.rule = "Function:";
-	if (current_toke->get_type() != Token::function)
+	function_node.rule = rules::Function;
+	if (current_toke.get_type() != Token::function)
 	{
-		std::string mes = "Expected function. "  + current_toke->get_lexema() + " " + " met.";
+		std::string mes = "Expected function. " + current_toke.get_lexema() + " " + " met.";
 		output_error(mes);
 	}
 
-	function_node.data = current_toke->get_lexema();
-	
-	++current_toke;
+	function_node.data = current_toke.get_lexema();
 
-
-	return function_node;
-	*/
-	return tree_node();
+	parent_node->childs.push_back(function_node);
+	comp->current_rule.pop();
 }
 
 void Syntactic_Analyzer::tree_node::show_tree(int deep)
@@ -724,6 +726,8 @@ void Syntactic_Analyzer::tree_node::show_tree(int deep)
 	case Divider: std::cout << "Divider: ";
 		break;
 	case Operator: std::cout << "Operator: ";
+		break;
+	case Function: std::cout << "Function: ";
 		break;
 	default:
 		break;

@@ -9,7 +9,7 @@ enum rules
 	Program,Begin,End,Descriptions,Operators,Descr, Type, VarList, Op, Expr, Id, Const,
 	
 	//sub rules
-	Divider, Operator, 
+	Divider, Operator,  Function
 };
 
 class Compiler

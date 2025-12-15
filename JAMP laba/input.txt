@@ -1,6 +1,6 @@
-PROGRAM Kdfsdf
-REAL a   , b,sdf    ,sdfsdf
-REAL jopa
-INTEGER key
-a = (a + 12
-b = 12
+PROGRAM ExampleBigProgram
+INTEGER i,j,k,n,sum,count
+REAL x,y,z,value, result,temp
+i  = a -
+a  = 123  + b
+END ExampleBigProgram
