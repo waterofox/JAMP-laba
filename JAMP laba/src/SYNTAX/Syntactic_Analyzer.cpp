@@ -572,6 +572,13 @@ void Syntactic_Analyzer::Expr_parsing(tree_node* parent_node)
 					//special continue EXPR
 					comp->actual_node = parenthesis.top();
 					parenthesis.pop();
+
+					if (!go_back_to_function.empty())
+					{
+						comp->actual_node = go_back_to_function.top();
+						go_back_to_function.pop();
+					}
+
 					comp->expected_token = Token::token_type::opErator;
 
 
@@ -606,7 +613,10 @@ void Syntactic_Analyzer::Expr_parsing(tree_node* parent_node)
 			continue_parsing(current_toke, &parent_node->childs.back());
 
 			comp->expected_token = Token::token_type::divider_;
-			comp->actual_node = &parent_node->childs.back();
+
+			go_back_to_function.push(&parent_node->childs.back());
+
+			comp->actual_node = &parent_node->childs.back().childs.back();
 		}
 		else
 		{

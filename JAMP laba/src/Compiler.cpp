@@ -19,16 +19,21 @@ void Compiler::compile_file(const std::string& file_path)
 	}
 
 	syntax->syntax_tree->show_tree(0);
+	//move tree to analyse
+	semant->syntax_tree = syntax->syntax_tree;
+	semant->scan_code(this->syntax->syntax_tree->childs.front());
 }
 
 Compiler::Compiler()
 {
 	this->lexica = new Lexical_Analyzer(this);
 	this->syntax = new Syntactic_Analyzer(this);
+	this->semant = new Semantic_Analyzer(nullptr);
 }
 
 Compiler::~Compiler()
 {
 	delete lexica;
 	delete syntax;
+	delete semant;
 }

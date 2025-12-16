@@ -1,3 +1,0 @@
-COMPUTER-DISPLAY
-heigth: 1600
-width: 2560

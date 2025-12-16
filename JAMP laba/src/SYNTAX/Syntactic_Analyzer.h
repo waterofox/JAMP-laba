@@ -10,6 +10,7 @@ enum rules;
 class Syntactic_Analyzer
 {
 	friend Compiler;
+public:
 	struct tree_node
 	{
 		rules rule; 
@@ -28,6 +29,8 @@ private:
 
 	Compiler* comp = nullptr;
 	std::stack<tree_node*> parenthesis;
+
+	std::stack<tree_node*> go_back_to_function;
 public:
 	tree_node* syntax_tree = nullptr;
 	

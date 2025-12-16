@@ -2,6 +2,7 @@
 
 #include "LEXICA/Lexical_Analyzer.h"
 #include "SYNTAX/Syntactic_Analyzer.h"
+#include "SEMANT/Semantic_Analyzer.h"
 
 enum rules
 {
@@ -29,6 +30,7 @@ public:
 private:
 	Lexical_Analyzer*   lexica = nullptr;
 	Syntactic_Analyzer* syntax = nullptr;
+	Semantic_Analyzer*  semant = nullptr;
 
 public:
 	void compile_file(const std::string& file_path);

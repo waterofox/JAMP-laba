@@ -1,6 +1,16 @@
 PROGRAM ExampleBigProgram
 INTEGER i,j,k,n,sum,count
-REAL x,y,z,value, result,temp
-i  = a -
-a  = 123  + b
+REAL x,y,z,value,result,temp
+i = 10
+j = ( 2 + 1)
+k = j + 2
+n = k - i
+sum = n + j
+count = sum + 2
+x = 3.14
+y = x  +  ( (1.5 - 2.3) - (12.2 + 3.5))
+z = y - z
+value = RTOI(x) + RTOI( ITOR( x + y ) - 2 + (a - b) )
+temp = value - 2.5
+result = temp + z
 END ExampleBigProgram
