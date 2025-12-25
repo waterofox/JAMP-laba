@@ -8,9 +8,10 @@ n = k - i
 sum = n + j
 count = sum + 2
 x = 3.14
-y = x  +  ( (1.5 - 2.3) - (12.2 + 3.5))
+sum = RTOI(x + 1.1)
+y = x  +  1.5
 z = y - z
-value = RTOI(x) + RTOI( ITOR( x + y ) - 2 + (a - b) )
+value = x + ITOR(count + 1)
 temp = value - 2.5
 result = temp + z
 END ExampleBigProgram

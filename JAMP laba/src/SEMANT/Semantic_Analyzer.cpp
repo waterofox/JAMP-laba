@@ -1,5 +1,8 @@
 #include "Semantic_Analyzer.h"
 #include "../Compiler.h"
+#include <string>
+
+#define CONTINUE_EXPR
 
 Semantic_Analyzer::Semantic_Analyzer(Syntactic_Analyzer::tree_node* tree)
 {
@@ -12,6 +15,7 @@ Semantic_Analyzer::~Semantic_Analyzer()
 
 void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_node)
 {
+
 	if (actual_node.rule == rules::Begin)
 	{
 		this->PROGRAM_id = actual_node.childs.back().data;
@@ -25,10 +29,12 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 			mes += "<END " + actual_node.childs.back().data;
 
 			std::cout << mes << '\n';
+
+			is_correct = false;
 		}
 		//exit rec
-		std::cout << "Your code is fully correct!\n";
 		return;
+
 	}
 	else if (actual_node.rule == rules::Descriptions)
 	{
@@ -71,6 +77,8 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 			mes += "id: " + defined_id;
 
 			std::cout << mes << '\n';
+	
+			is_correct = false;
 		}
 
 		if (actual_node.childs.size() == 1) 
@@ -118,6 +126,8 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 			mes += "id: " + var_node.data;
 
 			std::cout << mes << '\n';
+
+			is_correct = false;
 		}
 	}
 	else if (actual_node.rule == rules::Expr)
@@ -147,6 +157,8 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 						mes += "id: " + expr_var;
 
 						std::cout << mes << '\n';
+
+						is_correct = false;
 					}
 				}
 				else if (REAL_vars.find(expr_var) != REAL_vars.end())
@@ -157,6 +169,8 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 						mes += "id: " + expr_var;
 
 						std::cout << mes << '\n';
+
+						is_correct = false;
 					}
 				}
 				else
@@ -165,6 +179,8 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 					mes += "id: " + expr_var;
 
 					std::cout << mes << '\n';
+
+					is_correct = false;
 				}
 			}
 			else if (pod_expr_node.rule == rules::Const)
@@ -179,6 +195,8 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 						mes += "const: " + expr_const;
 
 						std::cout << mes << '\n';
+
+						is_correct = false;
 					}
 				}
 				else
@@ -190,6 +208,8 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 						mes += "const: " + expr_const;
 
 						std::cout << mes << '\n';
+
+						is_correct = false;
 					}
 				}
 			}
@@ -209,6 +229,8 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 						mes += "function: " + func;
 
 						std::cout << mes << '\n';
+
+						is_correct = false;
 					}
 
 					//check expr of funtion
@@ -227,6 +249,8 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 						mes += "function: " + func;
 
 						std::cout << mes << '\n';
+
+						is_correct = false;
 					}
 
 					//check expr of funtion
@@ -240,3 +264,121 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 		}
 	}
 }
+
+std::string Semantic_Analyzer::get_notation_descrs(const Syntactic_Analyzer::tree_node& node, int& varlist_size,const std::string& str)
+{
+	if (node.rule == Descriptions)
+	{
+		std::string notation_descrs = "";
+
+		for (int i = 0; i < node.childs.size(); ++i)
+		{
+			varlist_size = 0;
+			std::string notation_decr = "";
+			std::string rememberred_type;
+
+			const Syntactic_Analyzer::tree_node& Descr = node.childs[i];
+			
+			rememberred_type = Descr.childs.front().data;
+
+			//buld varlist
+
+			notation_descrs = notation_descrs + rememberred_type + ' ' + get_notation_descrs(Descr.childs.back(), varlist_size, notation_decr) + ' ';
+			notation_descrs = notation_descrs +  std::to_string(varlist_size + 1) + " DECL\n";
+		}
+
+		return str + notation_descrs;
+	}
+	else if (node.rule == VarList)
+	{
+		++varlist_size;
+		std::string varlist_notation = "";
+
+		varlist_notation += node.childs.front().data;
+		if (node.childs.size() == 1) { return varlist_notation; }
+		else
+		{
+			return varlist_notation + ' ' + get_notation_descrs(node.childs.back(), varlist_size, str);
+		}
+	}
+}
+
+std::string Semantic_Analyzer::get_notation_expr(const Syntactic_Analyzer::tree_node& node, const std::string& str)
+{
+	std::string notation_expr = "";
+	
+	if (node.childs.front().rule == rules::Id or node.childs.front().rule == rules::Const)
+	{
+		const Syntactic_Analyzer::tree_node& simp_node = node.childs.front();
+		
+		notation_expr += simp_node.data;
+
+		if (node.childs.size() == 1) { return notation_expr; }
+		else
+		{
+			if (node.childs[1].data == "+")
+			{
+				return notation_expr + ' ' + get_notation_expr(node.childs.back(), notation_expr) + " PLUS";
+			}
+			else
+			{
+				return notation_expr + ' ' + get_notation_expr(node.childs.back(), notation_expr) + " MINUS";
+			}
+		}
+	}
+	else if (node.childs.front().rule == rules::Divider)
+	{
+		notation_expr += get_notation_expr(node.childs[1], notation_expr);
+		if (node.childs.size() == 3) { return notation_expr; } // ( EXPR )
+		else
+		{
+			if (node.childs[1].data == "+")
+			{
+				return notation_expr + ' ' + get_notation_expr(node.childs.back(), notation_expr) + " PLUS";
+			}
+			else
+			{
+				return notation_expr + ' ' + get_notation_expr(node.childs.back(), notation_expr) + " MINUS";
+			}
+		}
+	}
+	else if (node.childs.front().rule == rules::Function)
+	{
+		const Syntactic_Analyzer::tree_node& function = node.childs.front();
+		notation_expr += function.data;
+		notation_expr = notation_expr + ' ' + get_notation_expr(function.childs.front(),notation_expr) + " 2 CALL";
+
+		if (node.childs.size() == 1) { return notation_expr; }
+		else
+		{
+			if (node.childs[1].data == "+")
+			{
+				return notation_expr + ' ' + get_notation_expr(node.childs.back(), notation_expr) + " PLUS";
+			}
+			else
+			{
+				return notation_expr + ' ' + get_notation_expr(node.childs.back(), notation_expr) + " MINUS";
+			}
+		}
+	}
+
+
+	return notation_expr;
+}
+
+std::string Semantic_Analyzer::get_notation_operators(const Syntactic_Analyzer::tree_node& node, const std::string& str)
+{
+	std::string notation_operators = "";
+	for (int i = 0; i < node.childs.size(); ++i)
+	{
+		std::string notation_op = "";
+
+		const Syntactic_Analyzer::tree_node& Op = node.childs[i];
+
+		std::string expr_buffer = "";
+		notation_operators = notation_operators + Op.childs.front().data + ' ' + get_notation_expr(Op.childs.back(), expr_buffer) + " ASSIGN\n";
+	}
+
+	return notation_operators;
+}
+
