@@ -66,10 +66,12 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 	{
 		//add id
 		std::string defined_id = actual_node.childs.front().data;
-		if (INTEGER_vars.find(defined_id) == INTEGER_vars.end() and \
-			REAL_vars.find(defined_id) == REAL_vars.end())
+		
+		Token check_token(Token::token_type::identifi_,defined_id);
+		if (INTEGER_vars.find(check_token).category == Token::token_type::not_found and \
+			REAL_vars.find(check_token).category == Token::token_type::not_found)
 		{
-			current_descr->insert(defined_id);
+			current_descr->add(check_token);
 		}
 		else
 		{
@@ -106,14 +108,16 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 		//check var
 		const Syntactic_Analyzer::tree_node& var_node = actual_node.childs.front();
 		
-		if (INTEGER_vars.find(var_node.data) != INTEGER_vars.end())
+		Token check_token(Token::token_type::identifi_, var_node.data);
+
+		if (INTEGER_vars.find(check_token).category != Token::token_type::not_found)
 		{
 			current_op_type = INTEGER;
 
 			//go to expr
 			scan_code(actual_node.childs.back());
 		}
-		else if (REAL_vars.find(var_node.data) != REAL_vars.end())
+		else if (REAL_vars.find(check_token).category != Token::token_type::not_found)
 		{
 			current_op_type = REAL;
 
@@ -149,7 +153,10 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 			else if (pod_expr_node.rule == rules::Id)
 			{
 				const std::string& expr_var = pod_expr_node.data;
-				if (INTEGER_vars.find(expr_var) != INTEGER_vars.end())
+
+				Token check_token(Token::token_type::identifi_, expr_var);
+
+				if (INTEGER_vars.find(check_token).category != Token::token_type::not_found)
 				{
 					if (current_expr_type != INTEGER)
 					{
@@ -161,7 +168,7 @@ void Semantic_Analyzer::scan_code(const Syntactic_Analyzer::tree_node& actual_no
 						is_correct = false;
 					}
 				}
-				else if (REAL_vars.find(expr_var) != REAL_vars.end())
+				else if (REAL_vars.find(check_token).category != Token::token_type::not_found)
 				{
 					if (current_expr_type != REAL)
 					{

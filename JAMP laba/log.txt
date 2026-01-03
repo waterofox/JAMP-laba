@@ -24,6 +24,8 @@ LEXEMA: y
 
 LEXEMA: z
 
+LEXEMA: i
+
 LEXEMA: value
 
 LEXEMA: result

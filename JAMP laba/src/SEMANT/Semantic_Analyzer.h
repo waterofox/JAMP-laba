@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../SYNTAX/Syntactic_Analyzer.h"
-#include <set>
+#include "../LEXICA/staff/Hash_Tabel.h"
 
 class Compiler;
 
@@ -12,20 +12,21 @@ class Semantic_Analyzer
 	{
 		INTEGER, REAL
 	};
-	enum notation_operators
-	{
-		DECL,CALL,PLUS,MINUS,ASSIGN
-	};
 
 	Syntactic_Analyzer::tree_node* syntax_tree = nullptr;
 private:
 	//data checkers
-	std::set<std::string> INTEGER_vars;
-	std::set<std::string> REAL_vars;
+
+	Hash_Tabel<64> INTEGER_vars;
+	Hash_Tabel<64> REAL_vars;
 	std::string PROGRAM_id;
+	/*
+			std::set<std::string> INTEGER_vars;
+			std::set<std::string> REAL_vars;
+	*/
 
 	//recursy datacheckers 
-	std::set<std::string>* current_descr = nullptr;
+	Hash_Tabel<64>* current_descr = nullptr;
 	var_types current_op_type;
 	std::stack<var_types> current_function_arg_type;
 	bool checking_function = false;
